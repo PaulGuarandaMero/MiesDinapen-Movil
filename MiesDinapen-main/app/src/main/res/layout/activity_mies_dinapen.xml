@@ -20,7 +20,7 @@
 
             <GridLayout
                 android:layout_width="370dp"
-                android:layout_height="220dp"
+                android:layout_height="250dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/border"
@@ -37,7 +37,23 @@
                     android:gravity="center"
                     android:text="@string/Lugar_y_tiempo"
                     android:textSize="20sp" />
+                <TextView
+                    android:layout_width="220px"
+                    android:layout_height="60px"
+                    android:layout_marginLeft="50px"
+                    android:layout_marginTop="10dp"
+                    android:text="Operador:"
+                    android:textColor="@color/white" />
 
+                <TextView
+                    android:id="@+id/txtOperador"
+                    android:layout_width="500px"
+                    android:layout_height="60px"
+                    android:layout_marginLeft="120dp"
+                    android:layout_marginTop="-20dp"
+                    android:enabled="true"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
                 <TextView
                     android:layout_width="220px"
                     android:layout_height="60px"
@@ -53,6 +69,7 @@
                     android:layout_marginLeft="120dp"
                     android:layout_marginTop="-20dp"
                     android:enabled="true"
+                    android:text="Asignando.."
                     android:textColor="@color/white"
                     android:textStyle="bold" />
 
@@ -70,7 +87,7 @@
                     android:layout_height="60px"
                     android:layout_marginLeft="120dp"
                     android:layout_marginTop="-60px"
-                    android:text=""
+                    android:text="Asignando.."
                     android:textColor="@color/white"
                     android:textStyle="bold"/>
                 <TextView
@@ -118,7 +135,7 @@
                 android:layout_width="370dp"
                 android:layout_height="270dp"
                 android:layout_marginLeft="-370dp"
-                android:layout_marginTop="260dp"
+                android:layout_marginTop="280dp"
                 android:background="@drawable/border"
                 android:columnCount="4"
                 android:orientation="vertical"
@@ -135,9 +152,9 @@
 
                 <ImageView
                     android:id="@+id/ImagenFoto"
-                    android:layout_width="169dp"
+                    android:layout_width="159dp"
                     android:layout_height="200dp"
-                    android:layout_marginLeft="10dp" />
+                    android:layout_marginLeft="12dp" />
 
                 <Button
                     android:id="@+id/BtnTomarFotos"
@@ -161,7 +178,6 @@
                     android:src="@drawable/ic_ubicacion"
                     android:text="@string/BtnTomarFotos"
                     android:textColor="@color/white" />
-
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="50dp"

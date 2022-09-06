@@ -19,17 +19,11 @@
 
     <application
         android:allowBackup="true"
-        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_titulo_imag_foreground"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MiesDinapen">
-        <activity
-            android:name=".ListIncidentes"
-            android:exported="false"
-            android:label="@string/title_activity_list_incidentes"
-            android:theme="@style/Theme.MiesDinapen.NoActionBar" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -46,11 +40,11 @@
             android:value="AIzaSyDL5pgpXqhvM1UvHh_HHpas1rq0hlv9R84" />
 
         <activity
-            android:name=".MapsActivity"
+            android:name=".Mapa.MapsActivity"
             android:exported="false"
             android:label="@string/title_activity_maps" />
         <activity
-            android:name=".RecordActivity"
+            android:name=".Audio.RecordActivity"
             android:exported="false"
             android:label=" Grabación de Audio" />
         <activity
@@ -65,7 +59,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AudioListActivity" />
+        <activity android:name=".Audio.AudioListActivity" />
 
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"

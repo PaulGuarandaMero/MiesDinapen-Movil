@@ -18,18 +18,18 @@ public class IncidentesController {
 
         bd = new BaseDeDatos(context);
     }
-/*
+
     public long addIncidente(Incidentes incidentes){
         SQLiteDatabase baseDeDatos = bd.getWritableDatabase();
         ContentValues valoresParaInsertar = new ContentValues();
-        valoresParaInsertar.put("idIntervencion",incidentes.getidIncidente());
+     //   valoresParaInsertar.put("idIntervencion",incidentes.getidIncidente());
         valoresParaInsertar.put("latitud",incidentes.getLatitud());
         valoresParaInsertar.put("logitud",incidentes.getLogitud());
-        valoresParaInsertar.put("hora",incidentes.getHora());
+     //   valoresParaInsertar.put("hora",incidentes.getHora());
         valoresParaInsertar.put("idoperador",incidentes.getIdOperador());
         return baseDeDatos.insert(Nombre_Tabla,null,valoresParaInsertar);
     }
-*/
+
     public ArrayList<Incidentes>obtenerList(){
         ArrayList<Incidentes> incidientes = new ArrayList<>();
 

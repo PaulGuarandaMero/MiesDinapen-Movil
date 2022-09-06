@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import androidx.camera.core.impl.annotation.ExecutedBy;
+
 import com.example.mies_dinapen.modelos.Incidentes;
 
 import org.json.JSONException;
@@ -21,12 +23,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Iterator;
+import java.util.concurrent.Executor;
 
 public class ServicioTask extends AsyncTask<Void, Void, String> {
     //variables del hilo
     private Context httpContext;//contexto
     ProgressDialog progressDialog;//dialogo cargando
-    public String resultadoapi="";
+    public static String resultadoapi="";
+    private String Id="";
     public String linkrequestAPI="";//link  para consumir el servicio rest
     public Incidentes incidentes;
 
@@ -37,10 +41,7 @@ public class ServicioTask extends AsyncTask<Void, Void, String> {
         this.incidentes=incidentes;
     }
 
-    public String respuest(){
-        String r =resultadoapi;
-        return r;
-    }
+
 
 
     @Override
@@ -52,7 +53,6 @@ public class ServicioTask extends AsyncTask<Void, Void, String> {
     @Override
     protected String doInBackground(Void... params) {
         String result= null;
-
         String wsURL = linkrequestAPI;
         URL url = null;
         try {
@@ -60,14 +60,6 @@ public class ServicioTask extends AsyncTask<Void, Void, String> {
             url = new URL(wsURL);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             //crear el objeto json para enviar por POST
-            JSONObject parametrosPost= new JSONObject();
-            parametrosPost.put("IDOperador",incidentes.getIdOperador());
-            parametrosPost.put("IDOrganCooperante",incidentes.getIdOrgOperador());
-            parametrosPost.put("IDPersonaIntervenida",incidentes.getIdPersona());
-            parametrosPost.put("Latitud",incidentes.getLatitud());
-            parametrosPost.put("Longitud",incidentes.getLogitud());
-            parametrosPost.put("FechaRegistro",incidentes.getFecha());
-
             String query ="{\n" +
                     ""+"\"IDOperador\":"+incidentes.getIdOperador() +"," +
                     "\n \"IDOrganCooperante\":"+incidentes.getIdOrgOperador()+","+
@@ -77,8 +69,6 @@ public class ServicioTask extends AsyncTask<Void, Void, String> {
                     "\n \"FechaRegistro\":\""+incidentes.getFecha()+"\"" +
                     "\n}"
                     ;
-
-
             //DEFINIR PARAMETROS DE CONEXION
             urlConnection.setReadTimeout(15000 /* milliseconds */);
             urlConnection.setConnectTimeout(15000 /* milliseconds */);
@@ -86,9 +76,8 @@ public class ServicioTask extends AsyncTask<Void, Void, String> {
             urlConnection.setDoInput(true);
             urlConnection.setDoOutput(true);
 
-            String queryapi=getPostDataString(parametrosPost);
-            System.out.println(queryapi);
-            System.out.println(query);
+
+//            System.out.println(query);
 
             //OBTENER EL RESULTADO DEL REQUEST
             OutputStream os = urlConnection.getOutputStream();
@@ -123,8 +112,6 @@ public class ServicioTask extends AsyncTask<Void, Void, String> {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -143,28 +130,5 @@ public class ServicioTask extends AsyncTask<Void, Void, String> {
 
     }
 
-    //FUNCIONES----------------------------------------------------------------------
-    //Transformar JSON Obejct a String *******************************************
-    public String getPostDataString(JSONObject params) throws Exception {
-
-        StringBuilder result = new StringBuilder();
-        boolean first = true;
-        Iterator<String> itr = params.keys();
-        while(itr.hasNext()){
-
-            String key= itr.next();
-            Object value = params.get(key);
-
-            if (first)
-                first = false;
-            else
-                result.append("&");
-
-            result.append(URLEncoder.encode(key, "UTF-8"));
-            result.append("=");
-            result.append(URLEncoder.encode(value.toString(), "UTF-8"));
-        }
-        return result.toString();
-    }
 
 }

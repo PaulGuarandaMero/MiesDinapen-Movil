@@ -1,6 +1,7 @@
 package com.example.mies_dinapen.Audio;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.example.mies_dinapen.Mies_Dinapen;
 import com.example.mies_dinapen.R;
 
 import java.io.IOException;
@@ -39,18 +41,22 @@ public class RecordActivity extends AppCompatActivity {
     private  String recordFile;
 
     private Chronometer timer;
-    private String nombre;
+
+    private static String llave;
+
+
     ////********* EL ACTIVITY DEL GRABAR AUDIO*************///
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_reproductor);
         listBtn = findViewById(R.id.record_list_btn);
         recordBtn = findViewById(R.id.record_btn);
         timer = findViewById(R.id.record_timer);
         filenameText =findViewById(R.id.record_filename);
 
-
+        llave= getIntent().getStringExtra("llave");
 
 
 
@@ -67,13 +73,11 @@ public class RecordActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(isRecording) {
                     //Stop Recording
-                    stopRecording();
 
                     // Change button image and set Recording state to false
                     recordBtn.setImageDrawable(getResources().getDrawable(R.drawable.record_btn_stopped, null));
                     isRecording = false;
-
-
+                    finish();
 
                 } else {
                     //Cheick permission to record audio
@@ -88,9 +92,13 @@ public class RecordActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+
     }
 
-    private void stopRecording() {
+
+    private String stopRecording() {
         //Stop Timer, very obvious
         timer.stop();
 
@@ -99,11 +107,13 @@ public class RecordActivity extends AppCompatActivity {
         //Stop media recorder and set it to null for further use to record new audio
         String path =getExternalFilesDir(recordFile).getAbsolutePath();
     /**    String path = getActivity().getExternalFilesDir(recordFile).getAbsolutePath();;
-      */nombre=path;
+      */
         mediaRecorder.stop();
         mediaRecorder.release();
         mediaRecorder = null;
+        return path;
     }
+
 
     private void startRecording() {
         //Start timer from 0

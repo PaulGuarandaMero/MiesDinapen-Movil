@@ -1,68 +1,80 @@
 package com.example.mies_dinapen.modelos;
 
 public class Operadores {
-    private String idOperador;
-    private String cedular;
-    private String nombre;
-    private String apellido;
-    private String clave;
+    private int IDOperador;
+    private String IDInstitucion;
+    private String OperaCargo;
+    private int OperaNCedula;
+    private String OperaApellido1;
+    private String OperaApellido2;
+    private String OperaNombres;
 
-    public Operadores (String idOperador, String cedular, String nombre, String apellido, String clave) {
-        this.idOperador = idOperador;
-        this.cedular = cedular;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.clave = clave;
+    public Operadores() {
     }
 
-    public String getidOperador() {
-        return idOperador;
+    public Operadores(int IDOperador, String IDInstitucion, String operaCargo, int operaNCedula, String operaApellido1, String operaApellido2, String operaNombres) {
+        this.IDOperador = IDOperador;
+        this.IDInstitucion = IDInstitucion;
+        OperaCargo = operaCargo;
+        OperaNCedula = operaNCedula;
+        OperaApellido1 = operaApellido1;
+        OperaApellido2 = operaApellido2;
+        OperaNombres = operaNombres;
     }
 
-    public void setidOperador(String idOperador) {
-        this.idOperador = idOperador;
+    public int getIDOperador() {
+        return IDOperador;
     }
 
-    public String getCedular() {
-        return cedular;
+    public void setIDOperador(int IDOperador) {
+        this.IDOperador = IDOperador;
     }
 
-    public void setCedular(String cedular) {
-        this.cedular = cedular;
+    public String getIDInstitucion() {
+        return IDInstitucion;
     }
 
-    public String getNombre() {
-        return nombre;
+    public void setIDInstitucion(String IDInstitucion) {
+        this.IDInstitucion = IDInstitucion;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public String getOperaCargo() {
+        return OperaCargo;
     }
 
-    public String getApellido() {
-        return apellido;
+    public void setOperaCargo(String operaCargo) {
+        OperaCargo = operaCargo;
     }
 
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
+    public int getOperaNCedula() {
+        return OperaNCedula;
     }
 
-    public String getClave() {
-        return clave;
+    public void setOperaNCedula(int operaNCedula) {
+        OperaNCedula = operaNCedula;
     }
 
-    public void setClave(String clave) {
-        this.clave = clave;
+    public String getOperaApellido1() {
+        return OperaApellido1;
     }
 
-    @Override
-    public String toString() {
-        return "Operadores{" +
-                "idOperador='" + idOperador+ '\'' +
-                ", cedular='" + cedular + '\'' +
-                ", nombre='" + nombre + '\'' +
-                ", apellido='" + apellido + '\'' +
-                ", clave='" + clave + '\'' +
-                '}';
+    public void setOperaApellido1(String operaApellido1) {
+        OperaApellido1 = operaApellido1;
+    }
+
+    public String getOperaApellido2() {
+        return OperaApellido2;
+    }
+
+    public void setOperaApellido2(String operaApellido2) {
+        OperaApellido2 = operaApellido2;
+    }
+
+    public String getOperaNombres() {
+        return OperaNombres;
+    }
+
+    public void setOperaNombres(String operaNombres) {
+        OperaNombres = operaNombres;
     }
 }

@@ -1,21 +1,18 @@
 package com.example.mies_dinapen.modelos;
 
 import java.sql.Timestamp;
+import java.util.Map;
 
 public class Incidentes {
 
     private int idPersona;
     private float logitud;
     private float latitud;
-    private Timestamp fecha;
+    private String fecha;
     private int idOrgOperador;
     private int idOperador;
 
-    public Incidentes(){
-
-    }
-
-    public Incidentes(int idPersona, float logitud, float latitud, Timestamp fecha, int idOrgOperador, int idOperador) {
+    public Incidentes(int idPersona, float logitud, float latitud, String fecha, int idOrgOperador, int idOperador) {
         this.idPersona = idPersona;
         this.logitud = logitud;
         this.latitud = latitud;
@@ -49,11 +46,11 @@ public class Incidentes {
         this.latitud = latitud;
     }
 
-    public Timestamp getFecha() {
+    public String getFecha() {
         return fecha;
     }
 
-    public void setFecha(Timestamp fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
     }
 

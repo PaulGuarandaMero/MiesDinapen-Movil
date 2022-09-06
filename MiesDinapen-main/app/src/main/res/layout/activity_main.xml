@@ -27,33 +27,13 @@
                     android:layout_marginBottom="50dp"
                     android:src="@mipmap/ic_dinapen_blanco_foreground" />
 
-                <EditText
-                    android:id="@+id/et_cedula"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginBottom="20dp"
-                    android:background="@drawable/input"
-                    android:hint="@string/login"
-                    android:inputType="number"
-                    android:padding="12dp"
-                    android:textColor="#EEF1EE"
-                    android:textColorHint="#FFF7F7" />
+                <Spinner
+                    android:id="@+id/spinner"
+                    android:layout_width="330dp"
+                    android:layout_height="71dp"
 
-                <EditText
-                    android:id="@+id/et_contrasena"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginBottom="20dp"
-                    android:background="@drawable/input"
-                    android:hint="Contraseña"
-                    android:inputType="textPassword"
-                    android:padding="12dp"
-                    android:textColor="#F6F6F6"
-                    android:textColorHint="#F4F4F4" />
+                    android:background="@drawable/border"
+                    android:prompt="@string/seleccionar_oper" />
 
                 <Button
                     android:id="@+id/iniciar_sesiónBTN"
@@ -62,6 +42,7 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginBottom="30dp"
+                    android:layout_marginTop="101dp"
                     android:padding="8dp"
                     android:background="@drawable/btn_fondo_color"
                     android:elevation="5dp"
@@ -69,34 +50,14 @@
                     android:textColor="#fff"
                     android:textSize="16sp" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/no_tienes_cuenta"
-                        android:textColor="#fff"
-                        android:textSize="16sp" />
 
-                    <Button
-                        android:id="@+id/crearCuentaBTN"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:background="@android:color/transparent"
-                        android:text="@string/crear_cuenta"
-                        android:textColor="#fff" />
 
-                </LinearLayout>
+
+
 
             </LinearLayout>
         </LinearLayout>
-   </ScrollView>
+    </ScrollView>
 
 </RelativeLayout>

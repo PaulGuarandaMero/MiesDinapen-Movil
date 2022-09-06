@@ -3,9 +3,7 @@ package com.example.mies_dinapen.Audio;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +23,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.io.File;
 import java.io.IOException;
+
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
 
 
 /**
@@ -64,13 +67,14 @@ public class AudioListFragment extends Fragment implements AudioListAdapter.onIt
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_audio_list, container, false);
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        System.out.println("lista eooooo");
         playerSheet = view.findViewById(R.id.player_sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(playerSheet);
         audioList = view.findViewById(R.id.audio_list_view);
@@ -224,3 +228,4 @@ public class AudioListFragment extends Fragment implements AudioListAdapter.onIt
         }
     }
 }
+

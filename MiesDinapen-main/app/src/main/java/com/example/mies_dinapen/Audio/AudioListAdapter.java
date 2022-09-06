@@ -15,7 +15,8 @@ import java.io.File;
 
 public class AudioListAdapter extends RecyclerView.Adapter<AudioListAdapter.AudioViewHolder> {
 
-   //////////////Aqui los audios se visualiza en forma de lista
+
+    //////////////Aqui los audios se visualiza en forma de lista
 
     private File[] allFiles;
     private TimeAgo timeAgo;
