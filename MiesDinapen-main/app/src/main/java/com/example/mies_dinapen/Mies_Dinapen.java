@@ -57,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 
 public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListener{
@@ -171,6 +172,7 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
                 public void onClick(View view) {
 
                     Intent i2 = new Intent(Mies_Dinapen.this, RecordActivity.class);
+                    i2.putExtra("idIncendicia",idI);
                     startActivity(i2);
                 }
             });
@@ -178,7 +180,7 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
             BtnGuardar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                 onDestroy();
                 }
             });
 
@@ -186,8 +188,12 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
-    public void newIncidencia(){
+    public void newIncidencia() throws ExecutionException, InterruptedException {
         int idOperador =  getIntent().getIntExtra("id",0);
         Incidentes incidentes= new Incidentes(1,ilatitud,ilongitud,date,1,idOperador);
         Servicio(incidentes);
@@ -264,10 +270,11 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
 
 
 
-    public void  Servicio(Incidentes incidentes){
+    public void  Servicio(Incidentes incidentes) throws ExecutionException, InterruptedException {
             ServicioTask servicioTask = new ServicioTask(this,Url1,incidentes);
             servicioTask.execute();
-            servicioTask.get
+         final String s = servicioTask.get();
+           idI = s;
     }
 
     public void guardar(Incidentes incidentes){
@@ -312,16 +319,7 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void asignar(String url){
 
-        File oldfile = new File(url);
-        File newfile = new File(id+ url);
-        if (oldfile.renameTo(newfile)) {
-            Toast.makeText(this,"archivo renombrado", Toast.LENGTH_LONG);
-        } else {
-            Toast.makeText(this,"no archivo renombrado", Toast.LENGTH_LONG);
-        }
-    }
 
     private void checkPermissionCamera() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -480,7 +478,13 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
                 txtlongitud.setText(sLongitud);
                 ilatitud= (float) loc.getLatitude();
                 ilongitud = (float) loc.getLongitude();
-                this.mies_dinapen.newIncidencia();
+                try {
+                    this.mies_dinapen.newIncidencia();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
         }

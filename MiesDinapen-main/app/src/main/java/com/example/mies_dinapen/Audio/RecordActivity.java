@@ -42,7 +42,7 @@ public class RecordActivity extends AppCompatActivity {
 
     private Chronometer timer;
 
-    private static String llave;
+    private static String key;
 
 
     ////********* EL ACTIVITY DEL GRABAR AUDIO*************///
@@ -56,7 +56,7 @@ public class RecordActivity extends AppCompatActivity {
         timer = findViewById(R.id.record_timer);
         filenameText =findViewById(R.id.record_filename);
 
-        llave= getIntent().getStringExtra("llave");
+        key = getIntent().getStringExtra("idIncendicia");
 
 
 
@@ -133,7 +133,8 @@ public class RecordActivity extends AppCompatActivity {
 
         for(int i=0; i<=0; i++ ){
             auto=count++;
-            recordFile = "Incidentes_"+auto
+            recordFile = key
+                    +"_"+auto
                     + formatter.format(now) + ".mp3";
         }
 
