@@ -2,6 +2,7 @@ package com.example.mies_dinapen;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ import java.util.concurrent.Executor;
 
 public class ServicioTask extends AsyncTask<Void, Void, String> {
     //variables del hilo
+
     private Context httpContext;//contexto
     ProgressDialog progressDialog;//dialogo cargando
     public static String resultadoapi="";
@@ -40,8 +42,6 @@ public class ServicioTask extends AsyncTask<Void, Void, String> {
         this.linkrequestAPI=linkAPI;
         this.incidentes=incidentes;
     }
-
-
 
 
     @Override

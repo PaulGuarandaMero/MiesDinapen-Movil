@@ -51,6 +51,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.SQLOutput;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -258,30 +259,15 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
         BtonTomarFoto = findViewById(R.id.BtnTomarFotos);
         btnMap= findViewById(R.id.btnDireccion);
         imagenFoto = findViewById(R.id.ImagenFoto);
-
         BtnGuardar = (FloatingActionButton) findViewById(R.id.GuardarBtn);
-
     }
 
-    private void renombre(String idI){
 
-
-        File oldfile = new File(idI);
-        File newfile = new File(idI);
-        if (oldfile.renameTo(newfile)) {
-            Toast.makeText(this,"archivo renombrado", Toast.LENGTH_LONG);
-        } else {
-            Toast.makeText(this,"no archivo renombrado", Toast.LENGTH_LONG);
-        }
-        // aqui se puede referir al objeto con arreglo[i];
-
-    }
 
     public void  Servicio(Incidentes incidentes){
-        ServicioTask servicioTask= new ServicioTask(this,Url1,incidentes);
-        servicioTask.execute();
-        servicioTask.
-        Toast.makeText(this,"Esto llego al activity Mies"+idI,Toast.LENGTH_LONG);
+            ServicioTask servicioTask = new ServicioTask(this,Url1,incidentes);
+            servicioTask.execute();
+            servicioTask.get
     }
 
     public void guardar(Incidentes incidentes){
