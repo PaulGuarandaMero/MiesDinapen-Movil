@@ -4,7 +4,29 @@ public class Audios {
     String idIncidete;
     String idAudio;
     String files;
+    String fechaRegistro;
 
+
+    public Audios(String idIncidete, String idAudio, String files, String fechaRegistro) {
+        this.idIncidete = idIncidete;
+        this.idAudio = idAudio;
+        this.files = files;
+        this.fechaRegistro = fechaRegistro;
+    }
+
+    public Audios(String idIncidete, String files, String fechaRegistro) {
+        this.idIncidete = idIncidete;
+        this.files = files;
+        this.fechaRegistro = fechaRegistro;
+    }
+
+    public String getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(String fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
 
     public String getIdIncidete() {
         return idIncidete;

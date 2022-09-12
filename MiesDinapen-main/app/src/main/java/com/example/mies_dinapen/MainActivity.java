@@ -104,14 +104,12 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<Operadores>>() {
             @Override
             public void onResponse(Call<List<Operadores>> call, Response<List<Operadores>> response) {
-                System.out.println("lalalalalala" + response);
                 if(response.isSuccessful()){
                     MensajeToast("Acceso exitoso al servicio REST");
                     response.body();
                     lstaOperador = response.body();
                     for (Operadores organizacion:lstaOperador){
                         operador.add(organizacion.getOperaNombres());
-                        System.out.println("lalalalalala" + response.body());
                     }
                     adapter.notifyDataSetChanged();
                 }else{

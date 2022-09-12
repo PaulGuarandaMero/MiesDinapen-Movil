@@ -1,10 +1,11 @@
 package com.example.mies_dinapen.Audio;
 
 import android.Manifest;
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.View;
@@ -12,15 +13,20 @@ import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.example.mies_dinapen.Mies_Dinapen;
 import com.example.mies_dinapen.R;
+import com.example.mies_dinapen.modelos.Audios;
+import com.example.mies_dinapen.service.ServiceTaskAudio;
+import com.example.mies_dinapen.service.ServicioTask;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -41,9 +47,9 @@ public class RecordActivity extends AppCompatActivity {
     private  String recordFile;
 
     private Chronometer timer;
-
+    private static final String Url2 = "https://miesdinapen.cf/api/Audios/insert.php";
     private static String key;
-
+    private static String rutaImagen;
 
     ////********* EL ACTIVITY DEL GRABAR AUDIO*************///
     @Override
@@ -77,7 +83,8 @@ public class RecordActivity extends AppCompatActivity {
                     // Change button image and set Recording state to false
                     recordBtn.setImageDrawable(getResources().getDrawable(R.drawable.record_btn_stopped, null));
                     isRecording = false;
-                    finish();
+                    stopRecording();
+
 
                 } else {
                     //Cheick permission to record audio
@@ -98,6 +105,7 @@ public class RecordActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("NewApi")
     private String stopRecording() {
         //Stop Timer, very obvious
         timer.stop();
@@ -108,11 +116,37 @@ public class RecordActivity extends AppCompatActivity {
         String path =getExternalFilesDir(recordFile).getAbsolutePath();
     /**    String path = getActivity().getExternalFilesDir(recordFile).getAbsolutePath();;
       */
+
+        String f = mostrar(path);
+        servicio(f);
         mediaRecorder.stop();
         mediaRecorder.release();
         mediaRecorder = null;
         return path;
     }
+
+
+    public void servicio(String f){
+        SimpleDateFormat simpleHourFormat = new SimpleDateFormat(" yyyy-MM-dd HH:mm:ss");
+        String date1 = simpleHourFormat.format(new Date());
+        Audios audio = new Audios(key,f,date1);
+        ServiceTaskAudio servicioTask = new ServiceTaskAudio(this, Url2, audio);
+        servicioTask.execute();
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public String mostrar(String path) {
+        try {
+            //return  new BASE64Encoder().encode(Files.readAllBytes(new File(ruta).toPath())); //otra forma
+            return java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(new File(path).toPath()));
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
 
 
     private void startRecording() {
@@ -133,7 +167,7 @@ public class RecordActivity extends AppCompatActivity {
 
         for(int i=0; i<=0; i++ ){
             auto=count++;
-            recordFile = key
+            recordFile = "incidencia_"+key
                     +"_"+auto
                     + formatter.format(now) + ".mp3";
         }
@@ -172,6 +206,7 @@ public class RecordActivity extends AppCompatActivity {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onStop() {
         super.onStop();

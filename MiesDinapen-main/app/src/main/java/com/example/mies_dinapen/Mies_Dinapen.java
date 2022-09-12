@@ -1,73 +1,67 @@
 package com.example.mies_dinapen;
 
 import android.Manifest;
-import android.app.AlertDialog;
-import android.app.Dialog;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.location.Address;
-import android.location.Geocoder;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
-import android.media.MediaScannerConnection;
+import android.net.PlatformVpnProfile;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import com.example.mies_dinapen.Audio.RecordActivity;
 import com.example.mies_dinapen.BDSQLITE.BaseDeDatos;
-import com.example.mies_dinapen.Controlador.IncidentesController;
 import com.example.mies_dinapen.Mapa.MapsActivity;
+import com.example.mies_dinapen.modelos.Fotos;
 import com.example.mies_dinapen.modelos.Incidentes;
+import com.example.mies_dinapen.service.ServicioTask;
+import com.example.mies_dinapen.service.ServicioTaskFotos;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.sql.SQLOutput;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 
-public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListener{
+public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListener {
 
     //************************ Tiempo Hora **************************************
     TextView GetDateTime;
     //************************ BASE DE DATOS *********************************
     BaseDeDatos DB;
     //*****************  CONEXION ****************************/
-    private static final String Url1="https://miesdinapen.cf/api/Incidencias/insert.php";
+    private static final String Url1 = "https://miesdinapen.cf/api/Incidencias/insert.php";
+    private static final String Url2 = "https://miesdinapen.cf/api/Fotos/insert.php";
 
     //GRABAR
     private static int MICROPHONE_PERMISSION_CODE = 200;
@@ -76,39 +70,41 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
     ProgressDialog progressDialog;//dialogo cargando
 
 
-
-
-
-      TextView txtlatitud;
-      TextView txtlongitud;
-    public  TextView txtOperador;
+    TextView txtlatitud;
+    TextView txtlongitud;
+    public TextView txtOperador;
 
     // Valores globales estaticos
     public static String latitud = null;
     public static String longitud = null;
     public static float ilatitud = 0.0f;
     public static float ilongitud;
-    public static String sLatitud ;
-    public static String sLongitud ;
+    public static String sLatitud;
+    public static String sLongitud;
     public static String idI = "";
     public static String id;
     public static String dr1;
     public static String date;
     public static String nombreImagenIncidente;
-
+    String rutaImagen;
     //FOTO
-    Button BtonTomarFoto, BTonSaveImagen,btnMap;
+    ImageButton BtonTomarFoto, BTonSaveImagen, btnMap;
     FloatingActionButton btnAudio, BtnGuardar;
 
-
-    ImageView imagenFoto;
-    Bitmap bitmap;
-    private IncidentesController incidentesController;
 
     //permisos para tomar fotos, permiso de la camara, permiso que se guarda en el movil
     private static final int REQUEST_PERMISSION_CAMERA = 100;
     private static final int TAKE_PICTURE = 101;
     private static final int REQUEST_PERMISSION_WRITE_STORAGE = 200;
+
+    ImageView ivFoto;
+    Button btnTomarFoto;
+
+    final int COD_FOTO = 20;
+    final String CARPETA_RAIZ = "MisFotosApp";
+    final String CARPETA_IMAGENES = "imagenes";
+    final String RUTA_IMAGEN = CARPETA_RAIZ + CARPETA_IMAGENES;
+    String path;
 
 
     @Override
@@ -118,26 +114,18 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
         setTitle("INCIDENTE");
         initUI();
 
-
-
-
         //****************************** BASE DE DATOS **************************/////////////
         DB = new BaseDeDatos(this);
 
         //Fotos
         txtOperador = findViewById(R.id.txtOperador);
         GetDateTime = findViewById(R.id.txthora);
-        txtOperador.setText( getIntent().getStringExtra("nombre"));
+        txtOperador.setText(getIntent().getStringExtra("nombre"));
         txtlatitud = findViewById(R.id.txtAreaLatitud);
         txtlongitud = findViewById(R.id.txtAreaLongitud);
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
-        } else {
+        if(txtlatitud.getText()!="Asignando"){
             locationStart();
-
         }
-
 
 
         //******************************* Tiempo y hora*************
@@ -148,42 +136,46 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
         //******************************************************
 
 
-
         ////************************************************************************************************
         //UBICACION COORDENADAS
 
 
-
-
         //UI
+
+
+        ivFoto = findViewById(R.id.ImagenFoto);
         BtonTomarFoto.setOnClickListener(this);
         BTonSaveImagen.setOnClickListener(this);
         btnMap.setOnClickListener(this);
 
+        BtonTomarFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkPermise();
+            }
+        });
+
+        // PERMISOS PARA ANDROID 6 O SUPERIOR
 
 
-        //BtnMapa
+        btnAudio = (FloatingActionButton) findViewById(R.id.btnAudio);
+        btnAudio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                Intent i2 = new Intent(Mies_Dinapen.this, RecordActivity.class);
+                i2.putExtra("idIncendicia", idI);
+                startActivity(i2);
+            }
+        });
+        BtnGuardar = (FloatingActionButton) findViewById(R.id.GuardarBtn);
+        BtnGuardar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-
-            btnAudio=(FloatingActionButton) findViewById(R.id.btnAudio);
-            btnAudio.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    Intent i2 = new Intent(Mies_Dinapen.this, RecordActivity.class);
-                    i2.putExtra("idIncendicia",idI);
-                    startActivity(i2);
-                }
-            });
-            BtnGuardar = (FloatingActionButton) findViewById(R.id.GuardarBtn);
-            BtnGuardar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                 onDestroy();
-                }
-            });
-
+                finish();
+            }
+        });
 
 
     }
@@ -193,47 +185,96 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
         super.onDestroy();
     }
 
+
+
     public void newIncidencia() throws ExecutionException, InterruptedException {
-        int idOperador =  getIntent().getIntExtra("id",0);
-        Incidentes incidentes= new Incidentes(1,ilatitud,ilongitud,date,1,idOperador);
-        Servicio(incidentes);
+        int idOperador = getIntent().getIntExtra("id", 0);
+        Incidentes incidentes = new Incidentes(1, ilatitud, ilongitud, date, 1, idOperador);
+          Servicio(incidentes);
+    }
+    public void tomarFoto() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+      //  if(intent.resolveActivity(getPackageManager())!=null){
+            File imagenArchivo = null;
+            try {
+                imagenArchivo= crearImagen();
+
+            }catch (IOException ex){
+                Log.e("Error", ex.toString());
+            }
+            if (imagenArchivo != null){
+                Uri fotoUri = FileProvider.getUriForFile(this,"com.cdp.camara.fileprovider",imagenArchivo);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT,fotoUri);
+                startActivityForResult(intent,1);
+            }
+
+       // }
+
     }
 
+    private File crearImagen() throws IOException {
+        String nombreImagen = "foto_";
+        File directorio=getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File imagen = File.createTempFile(nombreImagen,".jpg",directorio);
+        rutaImagen = imagen.getAbsolutePath();
+        return imagen;
 
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-
-        /**
-         if (requestCode == TAKE_PICTURE) {
-         if (resultCode == Activity.RESULT_OK && data != null) {
-         bitmap = (Bitmap) data.getExtras().get("data");
-         imagenFoto.setImageBitmap(bitmap);
-         }
-         }else*/
-        if (requestCode == 1) { // Please, use a final int instead of hardcoded int value
-            if (resultCode == RESULT_OK && data != null) {
-                dr1 = (String) data.getExtras().getString("datos","");
-                System.out.println("llego siiiiiiiiiiiiiiiiiiiiiiiii"+dr1);
-            }
-        }
         super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1 && resultCode == RESULT_OK){
+            Bitmap imgBitmap = BitmapFactory.decodeFile(rutaImagen);
+            ivFoto.setImageBitmap(imgBitmap);
+
+        }
     }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void mostrar() {
+        String s;
+         s =convertBinario(rutaImagen);
+        SimpleDateFormat simpleHourFormat = new SimpleDateFormat(" yyyy-MM-dd HH:mm:ss");
+        String date1 = simpleHourFormat.format(new Date());
+        Fotos foto = new Fotos(idI,s,date1);
+        ServicioTaskFotos servicioTaska = new ServicioTaskFotos(this, Url2, foto);
+        servicioTaska.execute();
+        System.out.println(s);
+    }
+
+
+    @SuppressLint("NewApi")
+    public String convertBinario(String ruta) {
+        try {
+            //return  new BASE64Encoder().encode(Files.readAllBytes(new File(ruta).toPath())); //otra forma
+            return java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(new File(ruta).toPath()));
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+
+
 
     @Override
     protected void onResume() {
         super.onResume();
     }
 
+    @SuppressLint("NewApi")
     @Override
     public void onClick(View view) {
         int id = view.getId();
 
-        if (id == R.id.BtnTomarFotos) {
-            checkPermissionCamera();
-            System.out.println("CAMARA" + imagenFoto);
+        if (id == R.id.botonTomarFoto) {
+            checkPermise();
         } else if (id == R.id.botonGuardar) {
-            checkPermissionStorage();
-        } else if (id == R.id.btnDireccion){
+
+            mostrar();
+        } else if (id == R.id.btnDireccion) {
             Intent i1 = new Intent(Mies_Dinapen.this, MapsActivity.class);
             startActivity(i1);
         }
@@ -243,13 +284,12 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_PERMISSION_CAMERA) {
             if (permissions.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                takePicture();
+
             }
         } else if (requestCode == REQUEST_PERMISSION_WRITE_STORAGE) {
             if (permissions.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                saveImagen();
             }
-        }else if (requestCode == 1000) {
+        } else if (requestCode == 1000) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 locationStart();
                 return;
@@ -260,24 +300,22 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
 
     // CAMARA\
     private void initUI() {
-        imagenFoto = findViewById(R.id.ImagenFoto);
         BTonSaveImagen = findViewById(R.id.botonGuardar);
         BtonTomarFoto = findViewById(R.id.BtnTomarFotos);
-        btnMap= findViewById(R.id.btnDireccion);
-        imagenFoto = findViewById(R.id.ImagenFoto);
+        btnMap = findViewById(R.id.btnDireccion);
         BtnGuardar = (FloatingActionButton) findViewById(R.id.GuardarBtn);
     }
 
 
-
-    public void  Servicio(Incidentes incidentes) throws ExecutionException, InterruptedException {
-            ServicioTask servicioTask = new ServicioTask(this,Url1,incidentes);
-            servicioTask.execute();
-         final String s = servicioTask.get();
-           idI = s;
+    public void Servicio(Incidentes incidentes) throws ExecutionException, InterruptedException {
+        ServicioTask servicioTask = new ServicioTask(this, Url1, incidentes);
+        servicioTask.execute();
+        final String s = servicioTask.get();
+        idI = s;
     }
 
-    public void guardar(Incidentes incidentes){
+
+  /*  public void guardar(Incidentes incidentes){
         incidentesController = new IncidentesController(Mies_Dinapen.this);
 
         long id = incidentesController.addIncidente(incidentes);
@@ -320,110 +358,21 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
     }
 
 
+*/
 
-    private void checkPermissionCamera() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                takePicture();
+
+    public void checkPermise() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
             } else {
-                ActivityCompat.requestPermissions(
-                        this,
-                        new String[]{Manifest.permission.CAMERA},
-                        REQUEST_PERMISSION_CAMERA
-
-                );
+                tomarFoto();
             }
         } else {
-            takePicture();
-        }
-
-    }
-
-    private void checkPermissionStorage() {
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    saveImagen();
-                } else {
-                    ActivityCompat.requestPermissions(
-                            this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            REQUEST_PERMISSION_WRITE_STORAGE
-                    );
-                }
-            } else {
-                saveImagen();
-            }
-        } else {
-            saveImagen();
-        }
-    }
-
-    private void takePicture() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-
-        }
-    }
-
-    private void saveImagen() {
-        OutputStream fos = null;
-        File file = null;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ContentResolver resolver = getContentResolver();
-            ContentValues values = new ContentValues();
-            //uso de escritura            startActivityForResult(intent, TAKE_PICTURE);
-            this.nombreImagenIncidente = System.currentTimeMillis() + "incidentes";
-
-            values.put(MediaStore.Images.Media.DISPLAY_NAME, nombreImagenIncidente);
-            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-            values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/Incidentes/Fotos");
-            values.put(MediaStore.Images.Media.IS_PENDING, 1);
-
-            Uri collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
-            Uri imageUri = resolver.insert(collection, values);
-
-            try {
-                fos = resolver.openOutputStream(imageUri);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            values.clear();
-            values.put(MediaStore.Images.Media.IS_PENDING, 0);
-            resolver.update(imageUri, values, null, null);
-
-
-        } else {
-            String imageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
-
-            String fileName = System.currentTimeMillis() + ".jpg";
-            file = new File(imageDir, fileName);
-            System.out.println("Foto muestra" + file);
-            try {
-                fos = new FileOutputStream(file);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        //DAR UNA MEJOR CALIDAD MAXIMA DE LAS FOTOS
-        boolean saved = bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-        if (saved) {
-            Toast.makeText(this, "IMAGEN GUARDADA!", Toast.LENGTH_SHORT).show();
-        }
-        if (fos != null) {
-            try {
-                fos.flush();
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-        // API < 29
-        if (file != null) {
-            MediaScannerConnection.scanFile(this, new String[]{file.toString()}, null, null);
+            tomarFoto();
         }
 
     }
@@ -446,13 +395,8 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
         mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, (LocationListener) Local);
 
     }
-
-
-
     //*************************************************************************************************
-
     //***************************************************  UBICACION **************************************
-
     public class Localizacion implements LocationListener {
         Mies_Dinapen mies_dinapen;
 
