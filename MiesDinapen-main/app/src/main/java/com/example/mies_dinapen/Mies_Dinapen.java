@@ -31,6 +31,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -173,7 +174,7 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if(lstA.get(1)!=null&&lstF.get(1)!=null){
+
                             try {
                                 newIncidencia();
                                 guardarlsta();
@@ -183,22 +184,41 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-                            onRestart();
-                        }else {
+                            finalizar();
 
-                        }
-                        finish();
                     }
 
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.d("Mensaje","Se cancelo la accion");
+                        Toast.makeText(Mies_Dinapen.this,"Se Cancelo La Accion",Toast.LENGTH_LONG);
+
                     }
-                })
+                }).show()
         ;
     }
+
+    private void finalizar(){
+            new AlertDialog.Builder(this)
+            .setTitle("Informe")
+            .setMessage("¿Desea generar nuevo Incidente?")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            onRestart();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            finish();
+                        }
+                    })
+                    .show();
+
+    ;}
+
 
     public void guardarlsta(){
         for (int i = 0; i < lstA.size(); i++){
