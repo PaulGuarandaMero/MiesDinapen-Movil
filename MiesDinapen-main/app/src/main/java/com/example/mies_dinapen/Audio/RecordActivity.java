@@ -2,6 +2,7 @@ package com.example.mies_dinapen.Audio;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
@@ -47,9 +48,8 @@ public class RecordActivity extends AppCompatActivity {
     private  String recordFile;
 
     private Chronometer timer;
-    private static final String Url2 = "https://miesdinapen.cf/api/Audios/insert.php";
+
     private static String key;
-    private static String rutaImagen;
 
     ////********* EL ACTIVITY DEL GRABAR AUDIO*************///
     @Override
@@ -83,7 +83,11 @@ public class RecordActivity extends AppCompatActivity {
                     // Change button image and set Recording state to false
                     recordBtn.setImageDrawable(getResources().getDrawable(R.drawable.record_btn_stopped, null));
                     isRecording = false;
-                    stopRecording();
+                    String path = stopRecording();
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("datos",path);
+                    setResult(Activity.RESULT_OK,returnIntent);
+                    finish();
 
 
                 } else {
@@ -117,21 +121,17 @@ public class RecordActivity extends AppCompatActivity {
     /**    String path = getActivity().getExternalFilesDir(recordFile).getAbsolutePath();;
       */
 
+
         String f = mostrar(path);
-        servicio(f);
         mediaRecorder.stop();
         mediaRecorder.release();
         mediaRecorder = null;
-        return path;
+        return f;
     }
 
 
     public void servicio(String f){
-        SimpleDateFormat simpleHourFormat = new SimpleDateFormat(" yyyy-MM-dd HH:mm:ss");
-        String date1 = simpleHourFormat.format(new Date());
-        Audios audio = new Audios(key,f,date1);
-        ServiceTaskAudio servicioTask = new ServiceTaskAudio(this, Url2, audio);
-        servicioTask.execute();
+
 
     }
 

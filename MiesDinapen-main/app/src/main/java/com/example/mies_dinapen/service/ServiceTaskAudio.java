@@ -39,7 +39,6 @@ public class ServiceTaskAudio extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        progressDialog = ProgressDialog.show(httpContext, "Procesando Solicitud", "por favor, espere");
     }
 
     @Override
@@ -58,6 +57,7 @@ public class ServiceTaskAudio extends AsyncTask<Void, Void, String> {
                     "\n \"FechaRegistro\":\""+audios.getFechaRegistro()+"\"" +
                     "\n}"
                     ;
+            System.out.println(query);
             //DEFINIR PARAMETROS DE CONEXION
             urlConnection.setReadTimeout(15000 /* milliseconds */);
             urlConnection.setConnectTimeout(15000 /* milliseconds */);
@@ -113,7 +113,6 @@ public class ServiceTaskAudio extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        progressDialog.dismiss();
         resultadoapi=s;
         Toast.makeText(httpContext,resultadoapi,Toast.LENGTH_LONG).show();//mostrara una notificacion con el resultado del request
 
