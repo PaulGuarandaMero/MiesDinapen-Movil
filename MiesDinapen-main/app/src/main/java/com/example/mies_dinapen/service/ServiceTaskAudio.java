@@ -66,7 +66,8 @@ public class ServiceTaskAudio extends AsyncTask<Void, Void, String> {
             urlConnection.setDoOutput(true);
 
 
-//            System.out.println(query);
+
+            System.out.println(query);
 
             //OBTENER EL RESULTADO DEL REQUEST
             OutputStream os = urlConnection.getOutputStream();

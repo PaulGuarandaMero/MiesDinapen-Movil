@@ -220,26 +220,35 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
     ;}
 
 
-    public void guardarlsta(){
+    public void guardarlsta() throws ExecutionException, InterruptedException {
         for (int i = 0; i < lstA.size(); i++){
-            String s =lstA.get(i);
             SimpleDateFormat simpleHourFormat = new SimpleDateFormat(" yyyy-MM-dd HH:mm:ss");
             String date1 = simpleHourFormat.format(new Date());
-            Audios audio = new Audios(idI,s,date1);
+            Audios audio = new Audios(idI,lstA.get(i),date1);
             ServiceTaskAudio servicioTask = new ServiceTaskAudio(this, Url3, audio);
             servicioTask.execute();
+            String error = servicioTask.get();
+            System.out.println("---------------------------------------------------------------");
+            System.out.println(error);
       }
 
     }
-    public void guardarlstf(){
-        for (int i = 0; i < lstA.size(); i++){
+
+
+
+
+    public void guardarlstf() throws ExecutionException, InterruptedException {
+        for (int q = 0; q < lstF.size(); q++){
+            System.out.println(lstF.get(q));
             // aqui se puede referir al objeto con arreglo[i];
-            String s=lstA.get(i);
             SimpleDateFormat simpleHourFormat = new SimpleDateFormat(" yyyy-MM-dd HH:mm:ss");
             String date1 = simpleHourFormat.format(new Date());
-            Fotos foto = new Fotos(idI,s,date1);
-            ServicioTaskFotos servicioTaska = new ServicioTaskFotos(this, Url2, foto);
-            servicioTaska.execute();
+            Fotos foto = new Fotos(idI,lstF.get(q),date1);
+            ServicioTaskFotos servicioTaskFotos = new ServicioTaskFotos(this, Url2, foto);
+            servicioTaskFotos.execute();
+            String error = servicioTaskFotos.get();
+            System.out.println("---------------------------------------------------------------");
+            System.out.println(error);
         }
     }
 
@@ -303,14 +312,15 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void mostrar() {
         System.out.println(rutaImagen);
-
-        lstF.add(rutaImagen);
+        String as = convertBinario(rutaImagen);
+        lstF.add(as);
     }
 
 
     @SuppressLint("NewApi")
     public String convertBinario(String ruta) {
         try {
+
             //return  new BASE64Encoder().encode(Files.readAllBytes(new File(ruta).toPath())); //otra forma
             return java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(new File(ruta).toPath()));
         } catch (Exception ex) {
@@ -373,6 +383,7 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
         ServicioTask servicioTask = new ServicioTask(this, Url1, incidentes);
         servicioTask.execute();
         final String s = servicioTask.get();
+        System.out.println();
         idI = s;
     }
 

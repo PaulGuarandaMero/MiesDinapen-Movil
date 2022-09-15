@@ -130,10 +130,7 @@ public class RecordActivity extends AppCompatActivity {
     }
 
 
-    public void servicio(String f){
 
-
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public String mostrar(String path) {

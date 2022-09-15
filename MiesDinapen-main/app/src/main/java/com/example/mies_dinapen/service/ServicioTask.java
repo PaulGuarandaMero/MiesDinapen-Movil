@@ -70,6 +70,7 @@ public class ServicioTask extends AsyncTask<Void, Void, String> {
                     "\n \"FechaRegistro\":\""+incidentes.getFecha()+"\"" +
                     "\n}"
                     ;
+
             //DEFINIR PARAMETROS DE CONEXION
             urlConnection.setReadTimeout(15000 /* milliseconds */);
             urlConnection.setConnectTimeout(15000 /* milliseconds */);
