@@ -69,9 +69,9 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
     //************************ BASE DE DATOS *********************************
     BaseDeDatos DB;
     //*****************  CONEXION ****************************/
-    private static final String Url1 = "https://miesdinapen.cf/api/Incidencias/insert.php";
-    private static final String Url2 = "https://miesdinapen.cf/api/Fotos/insert.php";
-    private static final String Url3 = "https://miesdinapen.cf/api/Audios/insert.php";
+    private static final String Url1 = "https://miesdinapen.tk/api/Incidencias/insert.php";
+    private static final String Url2 = "https://miesdinapen.tk/api/Fotos/insert.php";
+    private static final String Url3 = "https://miesdinapen.tk/api/Audios/insert.php";
     TextView txtlatitud;
     TextView txtlongitud;
     public TextView txtOperador;

@@ -20,7 +20,7 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 
 
     // Configuracion de la bd de get consultar
-    public static final String URL = "https://miesdinapen.cf/";
+    public static final String URL = "https://miesdinapen.tk/";
     public static Retrofit retrofit = null;
 
     public static Retrofit getConnetion(){
