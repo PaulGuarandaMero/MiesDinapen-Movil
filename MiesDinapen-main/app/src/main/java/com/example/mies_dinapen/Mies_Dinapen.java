@@ -1,5 +1,7 @@
 package com.example.mies_dinapen;
 
+import static com.google.common.io.ByteStreams.toByteArray;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -25,6 +27,7 @@ import android.os.Environment;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -41,6 +44,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.mies_dinapen.Audio.RecordActivity;
 import com.example.mies_dinapen.BDSQLITE.BaseDeDatos;
 import com.example.mies_dinapen.Mapa.MapsActivity;
@@ -52,13 +62,20 @@ import com.example.mies_dinapen.service.ServicioTask;
 import com.example.mies_dinapen.service.ServicioTaskFotos;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.apache.commons.io.FileUtils;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 
@@ -72,6 +89,9 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
     private static final String Url1 = "https://miesdinapen.tk/api/Incidencias/insert.php";
     private static final String Url2 = "https://miesdinapen.tk/api/Fotos/insert.php";
     private static final String Url3 = "https://miesdinapen.tk/api/Audios/insert.php";
+    String UPLOAD_URL = "https://miesdinapen.tk/api/Fotos/Upload_F.php";
+    String UPLOAD_URL2 = "https://miesdinapen.tk/api/Audios/Upload_A.php";
+
     TextView txtlatitud;
     TextView txtlongitud;
     public TextView txtOperador;
@@ -98,8 +118,10 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
     ImageView ivFoto;
 
 
-
-
+    Bitmap imgBitmap;
+    String KEY_IMAGE = "foto";
+    String KEY_NOMBRE = "nombre";
+    String KEY_AUDIO = "audio";
     static ArrayList<String> lstA;
     static ArrayList<String> lstF;
 
@@ -167,6 +189,116 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
+
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+
+        if (id == R.id.botonTomarFoto) {
+            checkPermise();
+        } else if (id == R.id.botonGuardar) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Informe")
+                    .setMessage("¿Desea generar Guardar Esta Imagen?")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            almacenarImagen();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Toast.makeText(Mies_Dinapen.this,
+                                    "Audio no guardador",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    })
+                    .show();
+
+        } else if (id == R.id.btnDireccion) {
+            Intent i1 = new Intent(Mies_Dinapen.this, MapsActivity.class);
+            startActivity(i1);
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_PERMISSION_CAMERA) {
+            if (permissions.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            }
+        } else if (requestCode == REQUEST_PERMISSION_WRITE_STORAGE) {
+            if (permissions.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            }
+        } else if (requestCode == 1000) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                locationStart();
+                return;
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1 && resultCode == RESULT_OK){
+            imgBitmap = BitmapFactory.decodeFile(rutaImagen);
+            ivFoto.setImageBitmap(imgBitmap);
+        }
+        if(requestCode ==2 && resultCode == RESULT_OK){
+            //////add Audio a lst
+            String result=data.getStringExtra("datos");
+            lstA.add(result);
+        }
+    }
+
+    private void initUI() {
+        BTonSaveImagen = findViewById(R.id.botonGuardar);
+        BtonTomarFoto = findViewById(R.id.BtnTomarFotos);
+        btnMap = findViewById(R.id.btnDireccion);
+        BtnGuardar = (FloatingActionButton) findViewById(R.id.GuardarBtn);
+    }
+
+
+
+    public void checkPermise() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+            } else {
+                tomarFoto();
+            }
+        } else {
+            tomarFoto();
+        }
+    }
+
+    private void locationStart() {
+        LocationManager mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Localizacion Local = new Localizacion();
+        Local.setMainActivity(this);
+        final boolean gpsEnabled = mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        if (!gpsEnabled) {
+            Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(settingsIntent);
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+            return;
+        }
+        mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, (LocationListener) Local);
+        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, (LocationListener) Local);
+
+    }
+
+
     private void mostrarDialogo(){
         new AlertDialog.Builder(this)
                 .setTitle("Mensaje de Alerta")
@@ -177,14 +309,16 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
 
                             try {
                                 newIncidencia();
-                                guardarlsta();
-                                guardarlstf();
+                               guardarlsta();
+                               guardarlstf();
                             } catch (ExecutionException e) {
                                 e.printStackTrace();
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
-                            finalizar();
+                        finalizar();
 
                     }
 
@@ -206,7 +340,8 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            onRestart();
+
+                            recreate();
                         }
                     })
                     .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -219,43 +354,41 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
 
     ;}
 
-
-    public void guardarlsta() throws ExecutionException, InterruptedException {
+    public void guardarlsta() throws ExecutionException, InterruptedException, IOException {
         for (int i = 0; i < lstA.size(); i++){
+            String nombre = idI+"_Audio_"+i;
+            String path = "https://miesdinapen.tk/api/Audios/Uploads/"+nombre+".mp3" ;
+            String var =convertBinario(lstA.get(i));
+            uploadAudio(nombre,var);
             SimpleDateFormat simpleHourFormat = new SimpleDateFormat(" yyyy-MM-dd HH:mm:ss");
             String date1 = simpleHourFormat.format(new Date());
-            Audios audio = new Audios(idI,lstA.get(i),date1);
+            Audios audio = new Audios(idI,path,date1);
             ServiceTaskAudio servicioTask = new ServiceTaskAudio(this, Url3, audio);
             servicioTask.execute();
-            String error = servicioTask.get();
-            System.out.println("---------------------------------------------------------------");
-            System.out.println(error);
       }
-
     }
-
-
-
 
     public void guardarlstf() throws ExecutionException, InterruptedException {
         for (int q = 0; q < lstF.size(); q++){
-            System.out.println(lstF.get(q));
-            // aqui se puede referir al objeto con arreglo[i];
+            Bitmap bits = BitmapFactory.decodeFile(lstF.get(q));
+            String nombre = idI+"_Fotos_"+q;
+            String path = "https://miesdinapen.tk/api/Fotos/Uploads/"+nombre+".png" ;
+            String var = getStringImagen(bits);
+            uploadImage(nombre,var);
             SimpleDateFormat simpleHourFormat = new SimpleDateFormat(" yyyy-MM-dd HH:mm:ss");
             String date1 = simpleHourFormat.format(new Date());
-            Fotos foto = new Fotos(idI,lstF.get(q),date1);
+            Fotos foto = new Fotos(idI,path,date1);
             ServicioTaskFotos servicioTaskFotos = new ServicioTaskFotos(this, Url2, foto);
             servicioTaskFotos.execute();
-            String error = servicioTaskFotos.get();
-            System.out.println("---------------------------------------------------------------");
-            System.out.println(error);
         }
     }
 
     public void newIncidencia() throws ExecutionException, InterruptedException {
         int idOperador = getIntent().getIntExtra("id", 0);
         Incidentes incidentes = new Incidentes(1, ilatitud, ilongitud, date, 1, idOperador);
-          Servicio(incidentes);
+        ServicioTask servicioTask = new ServicioTask(this, Url1, incidentes);
+        servicioTask.execute();
+        idI = servicioTask.get();
     }
 
     public void tomarFoto() {
@@ -287,189 +420,109 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
                     +"_"+auto;
         }
         File directorio=getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File imagen = File.createTempFile(nombreImagen,".jpg",directorio);
+        File imagen = File.createTempFile(nombreImagen,".png",directorio);
         rutaImagen = imagen.getAbsolutePath();
         return imagen;
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1 && resultCode == RESULT_OK){
-            Bitmap imgBitmap = BitmapFactory.decodeFile(rutaImagen);
-            ivFoto.setImageBitmap(imgBitmap);
-            System.out.println(rutaImagen);
-        }
-        if(requestCode ==2 && resultCode == RESULT_OK){
-            //////add Audio a lst
-            String result=data.getStringExtra("datos");
-            lstA.add(result);
-        }
+    public String getStringImagen(Bitmap bmp) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+
+        byte[] AudioBytes = baos.toByteArray();
+        String encodedImage = Base64.encodeToString(AudioBytes, Base64.DEFAULT);
+        return encodedImage;
     }
 
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void mostrar() {
-        System.out.println(rutaImagen);
-        String as = convertBinario(rutaImagen);
-        lstF.add(as);
-    }
-
-
-    @SuppressLint("NewApi")
-    public String convertBinario(String ruta) {
+    public String convertBinario(String ruta) throws IOException {
+        String encoded = null;
         try {
+            File file = new File(ruta);
+            byte[] bytes = FileUtils.readFileToByteArray(file);
+            encoded = Base64.encodeToString(bytes, 0);
 
-            //return  new BASE64Encoder().encode(Files.readAllBytes(new File(ruta).toPath())); //otra forma
-            return java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(new File(ruta).toPath()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            return encoded;
+        }catch (Exception e){
         }
+        return encoded;
+    }
+
+    public void almacenarImagen() {
+        Toast.makeText(Mies_Dinapen.this,"Agregado",Toast.LENGTH_LONG);
+        lstF.add(rutaImagen);
     }
 
 
+    public void uploadImage(String nombre , String imagen) {
+        final ProgressDialog loading = ProgressDialog.show(this, "Subiendo...", "Espere por favor");
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        loading.dismiss();
+                        Toast.makeText(Mies_Dinapen.this, response, Toast.LENGTH_LONG).show();
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @SuppressLint("NewApi")
-    @Override
-    public void onClick(View view) {
-        int id = view.getId();
-
-        if (id == R.id.botonTomarFoto) {
-            checkPermise();
-        } else if (id == R.id.botonGuardar) {
-
-            mostrar();
-        } else if (id == R.id.btnDireccion) {
-            Intent i1 = new Intent(Mies_Dinapen.this, MapsActivity.class);
-            startActivity(i1);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_PERMISSION_CAMERA) {
-            if (permissions.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                loading.dismiss();
+                Toast.makeText(Mies_Dinapen.this, error.getMessage().toString(), Toast.LENGTH_LONG).show();
 
             }
-        } else if (requestCode == REQUEST_PERMISSION_WRITE_STORAGE) {
-            if (permissions.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+
+
+                Map<String, String> params = new Hashtable<String, String>();
+                params.put(KEY_IMAGE, imagen);
+                params.put(KEY_NOMBRE, nombre);
+
+                return params;
             }
-        } else if (requestCode == 1000) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                locationStart();
-                return;
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+    }
+
+    public void uploadAudio(String nombre , String audio) {
+        final ProgressDialog loading = ProgressDialog.show(this, "Subiendo...", "Espere por favor");
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL2,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        loading.dismiss();
+                        Toast.makeText(Mies_Dinapen.this, response, Toast.LENGTH_LONG).show();
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                loading.dismiss();
+                Toast.makeText(Mies_Dinapen.this, error.getMessage().toString(), Toast.LENGTH_LONG).show();
             }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    // CAMARA\
-    private void initUI() {
-        BTonSaveImagen = findViewById(R.id.botonGuardar);
-        BtonTomarFoto = findViewById(R.id.BtnTomarFotos);
-        btnMap = findViewById(R.id.btnDireccion);
-        BtnGuardar = (FloatingActionButton) findViewById(R.id.GuardarBtn);
-    }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
 
 
-    public void Servicio(Incidentes incidentes) throws ExecutionException, InterruptedException {
-        ServicioTask servicioTask = new ServicioTask(this, Url1, incidentes);
-        servicioTask.execute();
-        final String s = servicioTask.get();
-        System.out.println();
-        idI = s;
-    }
+                Map<String, String> params = new Hashtable<String, String>();
+                params.put(KEY_AUDIO, audio);
+                params.put(KEY_NOMBRE, nombre);
 
-
-  /*  public void guardar(Incidentes incidentes){
-        incidentesController = new IncidentesController(Mies_Dinapen.this);
-
-        long id = incidentesController.addIncidente(incidentes);
-        if (id == -1) {
-            // De alguna manera ocurrió un error
-            Toast.makeText(Mies_Dinapen.this, "Error al guardar. Intenta de nuevo", Toast.LENGTH_SHORT).show();
-        } else {
-            // Terminar
-            finish();
-        }
-
-        // String imagen = new String(imagenFoto.toString());
-        //    String IDLugar = +1;
-        String coordenadaslatitud = latitud;
-        String coordenadaslongitud = longitud;
-        //   String audios =
-        System.out.println("PRUEBA DE DATOS LATITUD Y LONGITUD *******************" + coordenadaslatitud + coordenadaslongitud);
-        if (!TextUtils.isEmpty(coordenadaslatitud) || !TextUtils.isEmpty(coordenadaslongitud)) {
-            ///  insert = DB.insertDataCoordenadas(coordenadaslatitud, coordenadaslongitud); // guardo coordenadas
-
-            //guardo BLOB de imagen
-            String imageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/Incidentes/Fotos/";
-            File f = new File(imageDir + nombreImagenIncidente + ".jpg");
-            try { // convierto en binario antes de persistir
-                FileInputStream fl = new FileInputStream(f);
-                byte[] arr = new byte[(int) f.length()];
-                fl.read(arr);
-                fl.close();
-                DB.insertDataFotos(arr, new Date());
-                Toast.makeText(Mies_Dinapen.this, "Foto y coordenadas guardadas", Toast.LENGTH_SHORT).show();
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(Mies_Dinapen.this, "Primero guarde la img", Toast.LENGTH_LONG).show();
-
+                return params;
             }
-
-        } else {
-            Toast.makeText(Mies_Dinapen.this, "Error en coordenadas", Toast.LENGTH_SHORT).show();
-        }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
     }
 
+   // CAMARA\
 
-*/
+     //***************************************************  UBICACION **************************************
 
-
-    public void checkPermise() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-            } else {
-                tomarFoto();
-            }
-        } else {
-            tomarFoto();
-        }
-
-    }
-
-
-    private void locationStart() {
-        LocationManager mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Localizacion Local = new Localizacion();
-        Local.setMainActivity(this);
-        final boolean gpsEnabled = mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        if (!gpsEnabled) {
-            Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivity(settingsIntent);
-        }
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
-            return;
-        }
-        mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, (LocationListener) Local);
-        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, (LocationListener) Local);
-
-    }
-    //*************************************************************************************************
-    //***************************************************  UBICACION **************************************
     public class Localizacion implements LocationListener {
         Mies_Dinapen mies_dinapen;
 

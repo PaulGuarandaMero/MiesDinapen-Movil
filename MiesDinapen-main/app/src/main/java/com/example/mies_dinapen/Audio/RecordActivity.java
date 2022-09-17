@@ -122,7 +122,7 @@ public class RecordActivity extends AppCompatActivity {
       */
 
 
-        String f = mostrar(path);
+        String f = path;
         mediaRecorder.stop();
         mediaRecorder.release();
         mediaRecorder = null;
@@ -136,7 +136,7 @@ public class RecordActivity extends AppCompatActivity {
     public String mostrar(String path) {
         try {
             //return  new BASE64Encoder().encode(Files.readAllBytes(new File(ruta).toPath())); //otra forma
-            return java.util.Base64.getEncoder().encodeToString(Files.readAllBytes(new File(path).toPath()));
+            return com.example.mies_dinapen.service.Base64.getEncoder().encodeToString(Files.readAllBytes(new File(path).toPath()));
 
         } catch (Exception ex) {
             ex.printStackTrace();
