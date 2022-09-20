@@ -24,7 +24,6 @@ public class ServicioTaskFotos extends AsyncTask<Void, Void, String> {
     private Context httpContext;//contexto
     ProgressDialog progressDialog;//dialogo cargando
     public static String resultadoapi="";
-    private String Id="";
     public String linkrequestAPI="";//link  para consumir el servicio rest
     public Fotos fotos;
 

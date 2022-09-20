@@ -57,18 +57,12 @@ public class ServiceTaskAudio extends AsyncTask<Void, Void, String> {
                     "\n \"FechaRegistro\":\""+audios.getFechaRegistro()+"\"" +
                     "\n}"
                     ;
-            System.out.println(query);
             //DEFINIR PARAMETROS DE CONEXION
             urlConnection.setReadTimeout(15000 /* milliseconds */);
             urlConnection.setConnectTimeout(15000 /* milliseconds */);
             urlConnection.setRequestMethod("POST");// se puede cambiar por delete ,put ,etc
             urlConnection.setDoInput(true);
             urlConnection.setDoOutput(true);
-
-
-
-            System.out.println(query);
-
             //OBTENER EL RESULTADO DEL REQUEST
             OutputStream os = urlConnection.getOutputStream();
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));

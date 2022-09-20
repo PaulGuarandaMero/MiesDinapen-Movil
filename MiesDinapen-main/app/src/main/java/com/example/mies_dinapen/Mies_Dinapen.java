@@ -134,15 +134,13 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
         lstA=new ArrayList<>();
         lstF=new ArrayList<>();
         nombreOperador=getIntent().getStringExtra("nombre") ;
-        System.out.println(nombreOperador);
-
         //****************************** BASE DE DATOS **************************/////////////
-        DB = new BaseDeDatos(this);
 
+
+        DB = new BaseDeDatos(this);
         //Fotos
         txtOperador = findViewById(R.id.txtOperador);
         txtOperador.setText(nombreOperador);
-
         GetDateTime = findViewById(R.id.txthora);
         txtlatitud = findViewById(R.id.txtAreaLatitud);
         txtlongitud = findViewById(R.id.txtAreaLongitud);
@@ -150,7 +148,6 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
         BtonTomarFoto.setOnClickListener(this);
         BTonSaveImagen.setOnClickListener(this);
         btnMap.setOnClickListener(this);
-
         //******************************* Tiempo y hora*************
         SimpleDateFormat simpleHourFormat = new SimpleDateFormat(" yyyy-MM-dd HH:mm:ss");
         GetDateTime.setText(simpleHourFormat.format(new Date()));
@@ -308,9 +305,9 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
                     public void onClick(DialogInterface dialogInterface, int i) {
 
                             try {
-                                newIncidencia();
-                               guardarlsta();
-                               guardarlstf();
+                                 newIncidencia();
+                                 guardarlsta();
+                                 guardarlstf();
                             } catch (ExecutionException e) {
                                 e.printStackTrace();
                             } catch (InterruptedException e) {
@@ -374,6 +371,7 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
             String nombre = idI+"_Fotos_"+q;
             String path = "https://miesdinapen.tk/api/Fotos/Uploads/"+nombre+".png" ;
             String var = getStringImagen(bits);
+            System.out.println(var);
             uploadImage(nombre,var);
             SimpleDateFormat simpleHourFormat = new SimpleDateFormat(" yyyy-MM-dd HH:mm:ss");
             String date1 = simpleHourFormat.format(new Date());
@@ -462,7 +460,7 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
                     public void onResponse(String response) {
                         loading.dismiss();
                         Toast.makeText(Mies_Dinapen.this, response, Toast.LENGTH_LONG).show();
-
+                        System.out.println(response);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -502,6 +500,7 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
             public void onErrorResponse(VolleyError error) {
                 loading.dismiss();
                 Toast.makeText(Mies_Dinapen.this, error.getMessage().toString(), Toast.LENGTH_LONG).show();
+                System.out.println(error.getMessage().toString());
             }
         }) {
             @Override
