@@ -82,7 +82,7 @@ import java.util.concurrent.ExecutionException;
 public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListener {
 
     //************************ Tiempo Hora **************************************
-    TextView GetDateTime;
+
     //************************ BASE DE DATOS *********************************
     BaseDeDatos DB;
     //*****************  CONEXION ****************************/
@@ -92,9 +92,12 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
     String UPLOAD_URL = "https://miesdinapen.tk/api/Fotos/Upload_F.php";
     String UPLOAD_URL2 = "https://miesdinapen.tk/api/Audios/Upload_A.php";
 
+    TextView GetDateTime;
     TextView txtlatitud;
     TextView txtlongitud;
-    public TextView txtOperador;
+     TextView txtOperador;
+
+    ProgressDialog progressDialog;//dialogo cargando
 
     // Valores globales estaticos
     public static float ilatitud = 0.0f;
@@ -109,14 +112,11 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
     //FOTO
     ImageButton BtonTomarFoto, BTonSaveImagen, btnMap;
     FloatingActionButton btnAudio, BtnGuardar;
-
+    ImageView ivFoto;
 
     //permisos para tomar fotos, permiso de la camara, permiso que se guarda en el movil
     private static final int REQUEST_PERMISSION_CAMERA = 100;
     private static final int REQUEST_PERMISSION_WRITE_STORAGE = 200;
-
-    ImageView ivFoto;
-
 
     Bitmap imgBitmap;
     String KEY_IMAGE = "foto";
@@ -134,17 +134,12 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
         lstA=new ArrayList<>();
         lstF=new ArrayList<>();
         nombreOperador=getIntent().getStringExtra("nombre") ;
+        txtOperador.setText(nombreOperador);
         //****************************** BASE DE DATOS **************************/////////////
-
 
         DB = new BaseDeDatos(this);
         //Fotos
-        txtOperador = findViewById(R.id.txtOperador);
-        txtOperador.setText(nombreOperador);
-        GetDateTime = findViewById(R.id.txthora);
-        txtlatitud = findViewById(R.id.txtAreaLatitud);
-        txtlongitud = findViewById(R.id.txtAreaLongitud);
-        ivFoto = findViewById(R.id.ImagenFoto);
+
         BtonTomarFoto.setOnClickListener(this);
         BTonSaveImagen.setOnClickListener(this);
         btnMap.setOnClickListener(this);
@@ -188,6 +183,7 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
     }
 
 
+
     @Override
     public void onClick(View view) {
         int id = view.getId();
@@ -201,15 +197,14 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            almacenarImagen();
+                            Toast.makeText(Mies_Dinapen.this,"Agregado",Toast.LENGTH_LONG);
+                            lstF.add(rutaImagen);
                         }
                     })
                     .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            Toast.makeText(Mies_Dinapen.this,
-                                    "Audio no guardador",
-                                    Toast.LENGTH_LONG).show();
+                            Toast.makeText(Mies_Dinapen.this,"Imagen no guardador", Toast.LENGTH_LONG).show();
                         }
                     })
                     .show();
@@ -219,7 +214,6 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
             startActivity(i1);
         }
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -254,13 +248,17 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initUI() {
+        txtOperador = findViewById(R.id.txtOperador);
+        txtOperador.setText(nombreOperador);
+        GetDateTime = findViewById(R.id.txthora);
+        txtlatitud = findViewById(R.id.txtAreaLatitud);
+        txtlongitud = findViewById(R.id.txtAreaLongitud);
+        ivFoto = findViewById(R.id.ImagenFoto);
         BTonSaveImagen = findViewById(R.id.botonGuardar);
         BtonTomarFoto = findViewById(R.id.BtnTomarFotos);
         btnMap = findViewById(R.id.btnDireccion);
         BtnGuardar = (FloatingActionButton) findViewById(R.id.GuardarBtn);
     }
-
-
 
     public void checkPermise() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
@@ -295,7 +293,6 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
 
     }
 
-
     private void mostrarDialogo(){
         new AlertDialog.Builder(this)
                 .setTitle("Mensaje de Alerta")
@@ -303,18 +300,10 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
-                            try {
-                                 newIncidencia();
-                                 guardarlsta();
-                                 guardarlstf();
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                        int idOperador = getIntent().getIntExtra("id", 0);
+                        Incidentes incidentes = new Incidentes(1, ilatitud, ilongitud, date, 1, idOperador);
+                        ControlDeEnvio controlDeEnvio = new ControlDeEnvio(lstA,lstF,incidentes,Mies_Dinapen.this);
+                        controlDeEnvio.execute();
                         finalizar();
 
                     }
@@ -351,44 +340,6 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
 
     ;}
 
-    public void guardarlsta() throws ExecutionException, InterruptedException, IOException {
-        for (int i = 0; i < lstA.size(); i++){
-            String nombre = idI+"_Audio_"+i;
-            String path = "https://miesdinapen.tk/api/Audios/Uploads/"+nombre+".mp3" ;
-            String var =convertBinario(lstA.get(i));
-            uploadAudio(nombre,var);
-            SimpleDateFormat simpleHourFormat = new SimpleDateFormat(" yyyy-MM-dd HH:mm:ss");
-            String date1 = simpleHourFormat.format(new Date());
-            Audios audio = new Audios(idI,path,date1);
-            ServiceTaskAudio servicioTask = new ServiceTaskAudio(this, Url3, audio);
-            servicioTask.execute();
-      }
-    }
-
-    public void guardarlstf() throws ExecutionException, InterruptedException {
-        for (int q = 0; q < lstF.size(); q++){
-            Bitmap bits = BitmapFactory.decodeFile(lstF.get(q));
-            String nombre = idI+"_Fotos_"+q;
-            String path = "https://miesdinapen.tk/api/Fotos/Uploads/"+nombre+".png" ;
-            String var = getStringImagen(bits);
-            System.out.println(var);
-            uploadImage(nombre,var);
-            SimpleDateFormat simpleHourFormat = new SimpleDateFormat(" yyyy-MM-dd HH:mm:ss");
-            String date1 = simpleHourFormat.format(new Date());
-            Fotos foto = new Fotos(idI,path,date1);
-            ServicioTaskFotos servicioTaskFotos = new ServicioTaskFotos(this, Url2, foto);
-            servicioTaskFotos.execute();
-        }
-    }
-
-    public void newIncidencia() throws ExecutionException, InterruptedException {
-        int idOperador = getIntent().getIntExtra("id", 0);
-        Incidentes incidentes = new Incidentes(1, ilatitud, ilongitud, date, 1, idOperador);
-        ServicioTask servicioTask = new ServicioTask(this, Url1, incidentes);
-        servicioTask.execute();
-        idI = servicioTask.get();
-    }
-
     public void tomarFoto() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
       //  if(intent.resolveActivity(getPackageManager())!=null){
@@ -424,100 +375,6 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    public String getStringImagen(Bitmap bmp) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-
-        byte[] AudioBytes = baos.toByteArray();
-        String encodedImage = Base64.encodeToString(AudioBytes, Base64.DEFAULT);
-        return encodedImage;
-    }
-
-    public String convertBinario(String ruta) throws IOException {
-        String encoded = null;
-        try {
-            File file = new File(ruta);
-            byte[] bytes = FileUtils.readFileToByteArray(file);
-            encoded = Base64.encodeToString(bytes, 0);
-
-            return encoded;
-        }catch (Exception e){
-        }
-        return encoded;
-    }
-
-    public void almacenarImagen() {
-        Toast.makeText(Mies_Dinapen.this,"Agregado",Toast.LENGTH_LONG);
-        lstF.add(rutaImagen);
-    }
-
-
-    public void uploadImage(String nombre , String imagen) {
-        final ProgressDialog loading = ProgressDialog.show(this, "Subiendo...", "Espere por favor");
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        loading.dismiss();
-                        Toast.makeText(Mies_Dinapen.this, response, Toast.LENGTH_LONG).show();
-                        System.out.println(response);
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                loading.dismiss();
-                Toast.makeText(Mies_Dinapen.this, error.getMessage().toString(), Toast.LENGTH_LONG).show();
-
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-
-
-                Map<String, String> params = new Hashtable<String, String>();
-                params.put(KEY_IMAGE, imagen);
-                params.put(KEY_NOMBRE, nombre);
-
-                return params;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
-    }
-
-    public void uploadAudio(String nombre , String audio) {
-        final ProgressDialog loading = ProgressDialog.show(this, "Subiendo...", "Espere por favor");
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL2,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        loading.dismiss();
-                        Toast.makeText(Mies_Dinapen.this, response, Toast.LENGTH_LONG).show();
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                loading.dismiss();
-                Toast.makeText(Mies_Dinapen.this, error.getMessage().toString(), Toast.LENGTH_LONG).show();
-                System.out.println(error.getMessage().toString());
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-
-
-                Map<String, String> params = new Hashtable<String, String>();
-                params.put(KEY_AUDIO, audio);
-                params.put(KEY_NOMBRE, nombre);
-
-                return params;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
-    }
-
    // CAMARA\
 
      //***************************************************  UBICACION **************************************
@@ -542,7 +399,6 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
             if(sLatitud==null){
                 sLatitud = String.valueOf(loc.getLatitude());
                 sLongitud = String.valueOf(loc.getLongitude());
-                System.out.println(sLatitud +"   " +sLongitud);
                 txtlatitud.setText(sLatitud);
                 txtlongitud.setText(sLongitud);
                 ilatitud= (float) loc.getLatitude();

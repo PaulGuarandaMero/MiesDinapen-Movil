@@ -47,8 +47,7 @@ public class ServicioTask extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        progressDialog = ProgressDialog.show(httpContext, "Procesando Solicitud", "por favor, espere");
-    progressDialog.dismiss();
+        progressDialog = ProgressDialog.show(httpContext, "Creando Incidente", "por favor, espere");
     }
 
     @Override
@@ -127,7 +126,7 @@ public class ServicioTask extends AsyncTask<Void, Void, String> {
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
         resultadoapi=s;
-        Toast.makeText(httpContext,resultadoapi,Toast.LENGTH_LONG).show();//mostrara una notificacion con el resultado del request
+     //   Toast.makeText(httpContext,resultadoapi,Toast.LENGTH_LONG).show();//mostrara una notificacion con el resultado del request
 
     }
 

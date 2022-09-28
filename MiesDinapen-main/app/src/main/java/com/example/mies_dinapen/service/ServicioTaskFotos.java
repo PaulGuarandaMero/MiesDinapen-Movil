@@ -39,7 +39,7 @@ public class ServicioTaskFotos extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        progressDialog = ProgressDialog.show(httpContext, "Procesando Solicitud", "por favor, espere");
+        progressDialog = ProgressDialog.show(httpContext, "Subiendo foto", "por favor, espere");
     }
 
     @Override
@@ -114,10 +114,9 @@ public class ServicioTaskFotos extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        progressDialog.dismiss();
         resultadoapi=s;
 
-        Toast.makeText(httpContext,resultadoapi,Toast.LENGTH_LONG).show();//mostrara una notificacion con el resultado del request
+      //  Toast.makeText(httpContext,resultadoapi,Toast.LENGTH_LONG).show();//mostrara una notificacion con el resultado del request
 
     }
 

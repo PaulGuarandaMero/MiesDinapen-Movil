@@ -50,21 +50,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setTitle("LOGIN");
+        setTitle("Introduccion");
         //******Se asocia el arraylist de los datos y el adaptador
         spinneroperador =(Spinner) findViewById(R.id.spinner);
         adapter = new ArrayAdapter<String>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,operador);
         spinneroperador.setAdapter(adapter);
-
         ///******** SE OBTIENE EL ACCESO AL SERVICIO REST
         operadorUser = BaseDeDatos.getConnetion().create(OperadorUser.class);
-        System.out.println("PRUEBA" + operadorUser);
         ConsultarTabla();
-
         //**
         db = new BaseDeDatos(this);      //...
         iniciarSesion=(Button)findViewById(R.id.iniciar_sesiónBTN);
-
 
         iniciarSesion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,22 +71,13 @@ public class MainActivity extends AppCompatActivity {
         //...
     }
 
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-
-    }
-
     public void ConsultarTabla(){
         Call<List<Operadores>> call= operadorUser.listOperador();
         call.enqueue(new Callback<List<Operadores>>() {
             @Override
             public void onResponse(Call<List<Operadores>> call, Response<List<Operadores>> response) {
                 if(response.isSuccessful()){
-                    MensajeToast("Acceso exitoso al servicio REST");
+                    MensajeToast("La conexion es valida");
                     response.body();
                     lstaOperador = response.body();
                     for (Operadores organizacion:lstaOperador){
@@ -101,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
                     MensajeToast("Error de acceso al servicio de Rest");
                 }
             }
-
             @Override
             public void onFailure(Call<List<Operadores>> call, Throwable t) {
                 MensajeToast("Error de acceso al servicio de Rest");

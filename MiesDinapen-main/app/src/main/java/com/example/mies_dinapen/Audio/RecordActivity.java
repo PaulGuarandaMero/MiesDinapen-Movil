@@ -55,9 +55,8 @@ public class RecordActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_reproductor);
-        listBtn = findViewById(R.id.record_list_btn);
+      //listBtn = findViewById(R.id.record_list_btn);
         recordBtn = findViewById(R.id.record_btn);
         timer = findViewById(R.id.record_timer);
         filenameText =findViewById(R.id.record_filename);
@@ -66,14 +65,14 @@ public class RecordActivity extends AppCompatActivity {
 
 
 
-        listBtn.setOnClickListener(new View.OnClickListener() {
+/**       listBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 System.out.println("Lista");
                 Intent i2 = new Intent(RecordActivity.this , AudioListActivity.class);
                 startActivity(i2);
             }
-        });
+        });*/
         recordBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -127,11 +127,10 @@ tools:context=".Mies_Dinapen">
                     android:id="@+id/textView6"
                     android:layout_width="80dp"
                     android:layout_height="20dp"
-
                     android:layout_marginStart="45dp"
                     android:layout_marginTop="180dp"
                     android:background="@drawable/ground_item_p1"
-                    android:text="Hora:"
+                    android:text="fecha:"
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     app:layout_constraintStart_toStartOf="parent"

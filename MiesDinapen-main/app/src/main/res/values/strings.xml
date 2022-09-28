@@ -6,7 +6,7 @@
     <string name="no_tienes_cuenta">¿No tienes cuenta?</string>
     <string name="TituloCrearCuenta">Crear Cuenta</string>
     <string name="BtnDireccion">Buscar Mapa</string>
-    <string name="Lugar_y_tiempo">Datos de ubicacion</string>
+    <string name="Lugar_y_tiempo">Datos de la Incidencia</string>
     <string name="BtnTomarFotos">Guardar Foto</string>
     <string name="txtBusqueda"> Direccion</string>
     <string name="title_activity_seleccionar_direccion">SeleccionarDireccion</string>
