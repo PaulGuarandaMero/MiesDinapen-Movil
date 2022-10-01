@@ -47,7 +47,6 @@ public class ServicioTask extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        progressDialog = ProgressDialog.show(httpContext, "Creando Incidente", "por favor, espere");
     }
 
     @Override
@@ -55,6 +54,7 @@ public class ServicioTask extends AsyncTask<Void, Void, String> {
         String result= null;
         String wsURL = linkrequestAPI;
         URL url = null;
+        Toast.makeText(httpContext,"ESAASAS",Toast.LENGTH_LONG);
         try {
             // se crea la conexion al api: http://localhost:15009/WEBAPIREST/api/persona
             url = new URL(wsURL);
