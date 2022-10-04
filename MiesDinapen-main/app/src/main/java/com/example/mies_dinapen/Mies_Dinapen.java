@@ -1,17 +1,11 @@
 package com.example.mies_dinapen;
 
-import static com.google.common.io.ByteStreams.toByteArray;
-
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,18 +13,13 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
-import android.net.PlatformVpnProfile;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,45 +27,23 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.mies_dinapen.Audio.RecordActivity;
 import com.example.mies_dinapen.BDSQLITE.BaseDeDatos;
 import com.example.mies_dinapen.Mapa.MapsActivity;
-import com.example.mies_dinapen.modelos.Audios;
-import com.example.mies_dinapen.modelos.Fotos;
 import com.example.mies_dinapen.modelos.Incidentes;
-import com.example.mies_dinapen.service.ServiceTaskAudio;
-import com.example.mies_dinapen.service.ServicioTask;
-import com.example.mies_dinapen.service.ServicioTaskFotos;
+import com.example.mies_dinapen.service.ServiceInsert;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.apache.commons.io.FileUtils;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Array;
-import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 
 public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListener {
@@ -304,17 +271,7 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
                         Incidentes incidentes = new Incidentes(1, ilatitud, ilongitud, date, 1, idOperador);
                         ServiceInsert controlDeEnvio = new ServiceInsert(lstA,lstF,incidentes,Mies_Dinapen.this);
                         controlDeEnvio.execute();
-                        String result="null";
-                        try {
-                            result =controlDeEnvio.get();
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        if(result!="Finalizo"){
-                            finalizar();
-                        }
+                        finalizar();
                     }
 
                 })
@@ -419,12 +376,12 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onProviderDisabled(String provider) {
             // Este metodo se ejecuta cuando el GPS es desactivado
-            txtlatitud.setText("GPS Desactivado");
+            txtlatitud.setText(sLatitud);
         }
         @Override
         public void onProviderEnabled(String provider) {
             // Este metodo se ejecuta cuando el GPS es activado
-            txtlongitud.setText("GPS Activado");
+            txtlongitud.setText(sLongitud);
         }
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {

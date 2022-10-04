@@ -7,13 +7,6 @@ public class Audios {
     String fechaRegistro;
 
 
-    public Audios(String idIncidete, String idAudio, String files, String fechaRegistro) {
-        this.idIncidete = idIncidete;
-        this.idAudio = idAudio;
-        this.files = files;
-        this.fechaRegistro = fechaRegistro;
-    }
-
     public Audios(String idIncidete, String files, String fechaRegistro) {
         this.idIncidete = idIncidete;
         this.files = files;

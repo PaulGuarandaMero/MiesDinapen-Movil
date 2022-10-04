@@ -4,19 +4,14 @@ public class Fotos {
     String idIncidentes;
     String idFotos;
     String file;
-    String FechaRegistro;
+    String fechaRegistro;
 
-    public Fotos(String idIncidentes, String idFotos, String file, String fechaRegistro) {
-        this.idIncidentes = idIncidentes;
-        this.idFotos = idFotos;
-        this.file = file;
-        FechaRegistro = fechaRegistro;
-    }
+
 
     public Fotos(String idIncidentes, String file, String fechaRegistro) {
         this.idIncidentes = idIncidentes;
         this.file = file;
-        FechaRegistro = fechaRegistro;
+        this.fechaRegistro = fechaRegistro;
     }
 
     public String getIdIncidentes() {
@@ -44,10 +39,10 @@ public class Fotos {
     }
 
     public String getFechaRegistro() {
-        return FechaRegistro;
+        return fechaRegistro;
     }
 
     public void setFechaRegistro(String fechaRegistro) {
-        FechaRegistro = fechaRegistro;
+        this.fechaRegistro = fechaRegistro;
     }
 }
