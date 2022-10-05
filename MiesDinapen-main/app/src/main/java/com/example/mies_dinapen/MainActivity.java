@@ -29,8 +29,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
 
+public class MainActivity extends AppCompatActivity {
+    Bundle bundle;
     Button iniciarSesion;
     BaseDeDatos db;
     //...
@@ -41,15 +42,19 @@ public class MainActivity extends AppCompatActivity {
     //*****modelos operador y Adapter
     ArrayAdapter<String>adapter;
     ArrayList<String>operador=new ArrayList<String>();
-   /// Operadores operadores;
+    /// Operadores operadores;
     ///***** Interface service
     OperadorUser operadorUser;
     //lista de operadores
     List<Operadores>lstaOperador;
+    String alo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Intent intent = getIntent();
+        alo = intent.getStringExtra("Variable");
+
         setTitle("Introduccion");
         //******Se asocia el arraylist de los datos y el adaptador
         spinneroperador =(Spinner) findViewById(R.id.spinner);
@@ -65,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         iniciarSesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               mostrarDialogo();
+                mostrarDialogo();
             }
         });
         //...
@@ -81,7 +86,9 @@ public class MainActivity extends AppCompatActivity {
                     response.body();
                     lstaOperador = response.body();
                     for (Operadores organizacion:lstaOperador){
-                        operador.add(organizacion.getOperaNombres());
+                        if (organizacion.getIDInstitucion().equals(alo)){
+                            operador.add(organizacion.getOperaNombres());
+                        }
                     }
                     adapter.notifyDataSetChanged();
                 }else{
