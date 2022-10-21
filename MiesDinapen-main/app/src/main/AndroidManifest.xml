@@ -69,7 +69,7 @@
 
 
         <activity
-            android:name=".Select_inst"
+            android:name=".service.Select_inst"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
