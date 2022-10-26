@@ -268,7 +268,7 @@ public class Mies_Dinapen extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         int idOperador = getIntent().getIntExtra("id", 0);
-                        Incidentes incidentes = new Incidentes(1, ilatitud, ilongitud, date, 1, idOperador);
+                        Incidentes incidentes = new Incidentes(1, ilatitud,ilongitud ,date, 1, idOperador);
                         ServiceInsert controlDeEnvio = new ServiceInsert(lstA,lstF,incidentes,Mies_Dinapen.this);
                         controlDeEnvio.execute();
                         finalizar();
