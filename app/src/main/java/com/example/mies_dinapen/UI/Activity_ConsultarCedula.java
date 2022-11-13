@@ -65,7 +65,7 @@ public class Activity_ConsultarCedula extends AppCompatActivity implements View.
                 return true; // encontro una letra o espacio
             }
         }
-        return false; // no hay letras. Yo soy paul
+        return false; // no hay letras.
     }
 
     private boolean toValidarCedulaRuc(String noIdentificacion) {
