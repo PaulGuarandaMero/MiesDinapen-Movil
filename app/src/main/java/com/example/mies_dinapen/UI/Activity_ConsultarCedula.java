@@ -1,61 +1,92 @@
 package com.example.mies_dinapen.UI;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mies_dinapen.R;
-import com.example.mies_dinapen.service.ServiceConsult;
+import com.example.mies_dinapen.Retrofit.BaseDato;
+import com.example.mies_dinapen.UI.Adaptores.Adaptador_HistorialInci;
+import com.example.mies_dinapen.modelos.Item_historial;
+import com.example.mies_dinapen.service.OperadorUser;
+
+import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Activity_ConsultarCedula extends AppCompatActivity implements View.OnClickListener{
 
 
     Button consultaHis;
     EditText cedula;
+    TextView contador;
+    OperadorUser operadorUser;
+    RecyclerView recyclerView;
+    Adaptador_HistorialInci adaptador_historialInci;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_consultacedula);
 
+        contador = findViewById(R.id.numero_incidencia);
         consultaHis=findViewById(R.id.consultacedulabtnl);
         cedula=findViewById(R.id.consultacedula);
+        recyclerView=findViewById(R.id.RecyclerView);
+
+        initDataBase();
+        adaptador_historialInci = new Adaptador_HistorialInci(this);
+        recyclerView.setAdapter(adaptador_historialInci);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         consultaHis.setOnClickListener(this);
 
+    }
+
+    private void initDataBase(){
+        operadorUser = BaseDato.getConnetion().create(OperadorUser.class);
     }
 
     @Override
     public void onClick(View view) {
         if(view == consultaHis){
             if(toValidateNoIdentificacion(cedula.getText().toString())){
+                Call<ArrayList<Item_historial>> call = operadorUser.getHistorialIncidencia(cedula.getText().toString());
+                call.enqueue(new Callback<ArrayList<Item_historial>>() {
+                    @Override
+                    public void onResponse(Call<ArrayList<Item_historial>> call, Response<ArrayList<Item_historial>> response) {
+                        ArrayList<Item_historial> datos = new ArrayList<>();
+                        for (Item_historial item_historial:response.body()) {
+                            datos.add(item_historial);
+                        }
+                        if(datos.size()!= 0){
+                            contador.setText("Numero de Incidencia: " + datos.size());
+                        }else{
+                            contador.setText("No existen incidencia");
+                        }
+                        adaptador_historialInci.setDatos(datos);
+                    }
 
+                    @Override
+                    public void onFailure(Call<ArrayList<Item_historial>> call, Throwable t) {
+                        Log.e("TAG", "onResponse: " + t);
+                    }
+                });
             }
 
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public boolean toValidateNoIdentificacion( String noIdentificacion) {
         if (noIdentificacion.length() != 10) { // si la cadena no tiene 10 caracteres
@@ -67,8 +98,6 @@ public class Activity_ConsultarCedula extends AppCompatActivity implements View.
             return false;
         }
         if (toValidarCedulaRuc(noIdentificacion)) {
-            ServiceConsult consulta = new ServiceConsult(cedula.getText().toString(), Activity_ConsultarCedula.this);
-            consulta.execute();
             Toast.makeText(this, "Si es correcto", Toast.LENGTH_SHORT).show();
             return true;
         } else {

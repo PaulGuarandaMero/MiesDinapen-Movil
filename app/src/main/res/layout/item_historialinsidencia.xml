@@ -24,10 +24,10 @@
             android:padding="10dp"
             android:orientation="vertical">
             <TextView
-                android:id="@+id/I_BuscarR_TextView_IdContenedor"
+                android:id="@+id/I_BuscarR_TextView_NombreOpe"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Fecha"
+                android:text="Nombre"
                 android:textSize="15dp" />
             <LinearLayout
                 android:layout_width="match_parent"
@@ -35,11 +35,11 @@
                 android:orientation="horizontal"
                 android:gravity="center">
                 <TextView
-                    android:id="@+id/I_BuscarR_TextView_Fecha"
+                    android:id="@+id/I_BuscarR_TextView_IdInter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
-                    android:text="Latitud: "
+                    android:text="IdI "
                     android:textSize="10dp" />
                 <TextView
                     android:layout_width="wrap_content"
@@ -47,12 +47,21 @@
                     android:padding="10dp"
                     android:text="-"
                     android:textSize="10dp" />
+
                 <TextView
-                    android:id="@+id/I_BuscarR_TextView_idRegistro"
+                    android:id="@+id/I_BuscarR_TextView_idEstado"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="Estado "
+                    android:textSize="10dp" />
+
+                <TextView
+                    android:id="@+id/I_BuscarR_TextView_Fecha"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
-                    android:text="Longitud: "
+                    android:text="Fecha "
                     android:textSize="10dp" />
             </LinearLayout>
         </LinearLayout>

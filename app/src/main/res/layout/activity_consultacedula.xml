@@ -25,6 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="CEDULA"
+                android:text="0953679958"
                 ></EditText>
             <Button
                 android:id="@+id/consultacedulabtnl"
@@ -36,6 +37,14 @@
                 android:layout_margin="10dp"/>
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/numero_incidencia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:text="Numero de Incidencia: "/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/RecyclerView"

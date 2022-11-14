@@ -4,7 +4,7 @@ public class Operador {
     private int IDOperador;
     private String IDInstitucion;
     private String OperaCargo;
-    private int OperaNCedula;
+    private String OperaNCedula;
     private String OperaApellido1;
     private String OperaApellido2;
     private String OperaNombres;
@@ -12,7 +12,7 @@ public class Operador {
     public Operador() {
     }
 
-    public Operador(int IDOperador, String IDInstitucion, String operaCargo, int operaNCedula, String operaApellido1, String operaApellido2, String operaNombres) {
+    public Operador(int IDOperador, String IDInstitucion, String operaCargo, String operaNCedula, String operaApellido1, String operaApellido2, String operaNombres) {
         this.IDOperador = IDOperador;
         this.IDInstitucion = IDInstitucion;
         OperaCargo = operaCargo;
@@ -46,11 +46,11 @@ public class Operador {
         OperaCargo = operaCargo;
     }
 
-    public int getOperaNCedula() {
+    public String getOperaNCedula() {
         return OperaNCedula;
     }
 
-    public void setOperaNCedula(int operaNCedula) {
+    public void setOperaNCedula(String operaNCedula) {
         OperaNCedula = operaNCedula;
     }
 
