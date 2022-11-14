@@ -32,30 +32,50 @@ public class Activity_ConsultarCedula extends AppCompatActivity implements View.
     @Override
     public void onClick(View view) {
         if(view == consultaHis){
-            toValidateNoIdentificacion(cedula.getText().toString());
+            if(toValidateNoIdentificacion(cedula.getText().toString())){
+
+            }
+
         }
     }
 
-    public String toValidateNoIdentificacion( String noIdentificacion) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public boolean toValidateNoIdentificacion( String noIdentificacion) {
         if (noIdentificacion.length() != 10) { // si la cadena no tiene 10 caracteres
             Toast.makeText(this, "Una cédula se compone de 10 caracteres.", Toast.LENGTH_SHORT).show();
-            return "Una cédula se compone de 10 caracteres.";
+            return false;
         }
         if (toBuscarLetras(noIdentificacion)) { // si la cadena tiene espacios o letras
             Toast.makeText(this, "Una cédula no contiene letras.", Toast.LENGTH_SHORT).show();
-            return "Una cédula no contiene letras.";
+            return false;
         }
         if (toValidarCedulaRuc(noIdentificacion)) {
             ServiceConsult consulta = new ServiceConsult(cedula.getText().toString(), Activity_ConsultarCedula.this);
             consulta.execute();
             Toast.makeText(this, "Si es correcto", Toast.LENGTH_SHORT).show();
-            return "Cédula OK";
+            return true;
         } else {
             Toast.makeText(this, "Cedula Incorrecta", Toast.LENGTH_SHORT).show();
-            return "Cédula No Válida";
+            return false;
         }
     }
-
 
     private boolean toBuscarLetras(String noIdentificacion) {
         for (int x = 0; x < noIdentificacion.length(); x++) {

@@ -13,4 +13,6 @@ public interface OperadorUser {
     @POST("api/Operadores/selectOperadorLogin.php")
     public abstract Call<Operador> getOperoador(@Body HashMap<String, String> datos);
 
+
+
 }

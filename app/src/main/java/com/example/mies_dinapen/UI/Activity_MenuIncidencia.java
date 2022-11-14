@@ -3,6 +3,7 @@ package com.example.mies_dinapen.UI;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -48,29 +49,15 @@ import java.util.Date;
 
 public class Activity_MenuIncidencia extends AppCompatActivity implements View.OnClickListener {
 
-    //************************ Tiempo Hora **************************************
-
-    //************************ BASE DE DATOS *********************************
-    //*****************  CONEXION ****************************/
-    private static final String Url1 = "https://miesdinapen.tk/api/Incidencias/insert.php";
-    private static final String Url2 = "https://miesdinapen.tk/api/Fotos/insert.php";
-    private static final String Url3 = "https://miesdinapen.tk/api/Audios/insert.php";
-    private static final String Url4= "https://miesdinapen.tk/api/Incidencias/hasIntervencion.php";
-    String UPLOAD_URL = "https://miesdinapen.tk/api/Fotos/Upload_F.php";
-    String UPLOAD_URL2 = "https://miesdinapen.tk/api/Audios/Upload_A.php";
 
 
-    TextView GetDateTime;
-    TextView txtlatitud;
-    TextView txtlongitud;
-    TextView txtOperador;
-    public EditText txtreferencia;
-    public EditText txtCedula;
-    public EditText txtNombre;
-    Button btnConsultar;
+    TextView txtlongitud , txtOperador , txtlatitud , GetDateTime;
+    EditText txtreferencia , txtNombre;
+    Button btnConsultar , btnAudio, BtnGuardar;
+    ImageButton BtonTomarFoto, BTonSaveImagen, btnMap;
+    ImageView ivFoto;
+    ProgressDialog progressDialog;
 
-
-    ProgressDialog progressDialog;//dialogo cargando
 
     // Valores globales estaticos
     public static float ilatitud = 0.0f;
@@ -78,26 +65,20 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
     public static String sLatitud;
     public static String sLongitud;
     public static String idI = "";
-    public static String id;
-    public static String referencia ="";
     public static String nombreOperador;
     public static String date;
-    String rutaImagen;
-    //FOTO
-    ImageButton BtonTomarFoto, BTonSaveImagen, btnMap;
-    Button btnAudio, BtnGuardar;
-    ImageView ivFoto;
+    public static String rutaImagen;
+    public static Bitmap imgBitmap;
+    public static int idOperador;
+
+    public static ArrayList<String> lstA;
+    public static ArrayList<String> lstF;
+
 
     //permisos para tomar fotos, permiso de la camara, permiso que se guarda en el movil
     private static final int REQUEST_PERMISSION_CAMERA = 100;
     private static final int REQUEST_PERMISSION_WRITE_STORAGE = 200;
 
-    Bitmap imgBitmap;
-    String KEY_IMAGE = "foto";
-    String KEY_NOMBRE = "nombre";
-    String KEY_AUDIO = "audio";
-    static ArrayList<String> lstA;
-    static ArrayList<String> lstF;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,98 +86,109 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
         setContentView(R.layout.activity_menuincidencia);
 
         setTitle("INCIDENTE");
-        initUI();
-        lstA=new ArrayList<>();
-        lstF=new ArrayList<>();
-        nombreOperador=getIntent().getStringExtra("nombre") ;
-        txtOperador.setText(nombreOperador);
-        //****************************** BASE DE DATOS **************************/////////////
 
-        //Fotos
+        initUI();
+        initdata();
+        setViewData();
+        initEventClick();
+        checkPermise();
+    }
+
+    private void initUI() {
+        ivFoto = findViewById(R.id.ImagenFoto);
+
+        txtreferencia = findViewById(R.id.edtxtReferencia);
+        txtNombre = findViewById(R.id.txtNombreRepresentante);
+        GetDateTime = findViewById(R.id.txthora);
+        txtlatitud = findViewById(R.id.txtAreaLatitud);
+        txtlongitud = findViewById(R.id.txtAreaLongitud);
+        txtOperador = findViewById(R.id.txtOperador);
+
+        BTonSaveImagen = findViewById(R.id.botonGuardar);
+        BtonTomarFoto = findViewById(R.id.BtnTomarFotos);
+        btnConsultar = findViewById(R.id.btnConsultaR);
+        btnMap = findViewById(R.id.btnDireccion);
+
+        btnAudio = findViewById(R.id.btnAudio);
+        BtnGuardar = findViewById(R.id.GuardarBtn);
+    }
+
+    private void initdata(){
+        nombreOperador = getIntent().getStringExtra("nombre");
+        idOperador = getIntent().getIntExtra("id", 0);
+        date = new SimpleDateFormat(" yyyy-MM-dd HH:mm:ss").format(new Date());
+        lstA = new ArrayList<>();
+        lstF = new ArrayList<>();
+    }
+
+    private void setViewData(){
+        txtOperador.setText(nombreOperador);
+        GetDateTime.setText(date);
+
+        if (!txtlatitud.getText().equals("Asignando")) {
+            locationStart();
+        }
+    }
+
+    private void initEventClick(){
 
         BtonTomarFoto.setOnClickListener(this);
         btnConsultar.setOnClickListener(this);
         BTonSaveImagen.setOnClickListener(this);
         btnMap.setOnClickListener(this);
-        //******************************* Tiempo y hora*************
-        SimpleDateFormat simpleHourFormat = new SimpleDateFormat(" yyyy-MM-dd HH:mm:ss");
-        GetDateTime.setText(simpleHourFormat.format(new Date()));
-        date = simpleHourFormat.format(new Date());
-        //*********************************************************************************
-        //******************************************************
-        ////************************************************************************************************
-        //UBICACION COORDENADAS
-        if(!txtlatitud.getText().equals("Asignando")){
-            locationStart();
-        }
-        //UI
-
-        BtonTomarFoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                checkPermise();
-            }
-        });
-        // PERMISOS PARA ANDROID 6 O SUPERIOR
-        btnAudio = findViewById(R.id.btnAudio);
-        btnAudio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent i2 = new Intent(Activity_MenuIncidencia.this, RecordActivity.class);
-                i2.putExtra("idIncendicia", idI);
-                startActivityForResult(i2,2);
-            }
-        });
-        BtnGuardar = findViewById(R.id.GuardarBtn);
-        BtnGuardar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mostrarDialogo();
-            }
-        });
+        btnAudio.setOnClickListener(this);
+        BtnGuardar.setOnClickListener(this);
     }
-
 
 
     @Override
     public void onClick(View view) {
-        int id = view.getId();
-
-        if(id == R.id.btnConsultaR){
+        if (view == btnConsultar) {
             Intent intent = new Intent(this, Activity_ConsultarCedula.class);
             startActivity(intent);
         }
-        if (id == R.id.BtnTomarFotos) {
+        if (view == BtonTomarFoto) {
+            PermisesCamara();
             checkPermise();
         }
-        if (id == R.id.botonGuardar) {
+        if (view == BTonSaveImagen) {
             new AlertDialog.Builder(this)
                     .setTitle("Informe")
                     .setMessage("¿Desea generar Guardar Esta Imagen?")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            Toast.makeText(Activity_MenuIncidencia.this,"Agregado",Toast.LENGTH_LONG);
+                            Toast.makeText(Activity_MenuIncidencia.this, "Agregado", Toast.LENGTH_LONG);
                             lstF.add(rutaImagen);
                         }
                     })
                     .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            Toast.makeText(Activity_MenuIncidencia.this,"Imagen no guardador", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Activity_MenuIncidencia.this, "Imagen no guardador", Toast.LENGTH_LONG).show();
                         }
                     })
                     .show();
 
         }
-        if (id == R.id.btnDireccion) {
-            //corregir intent impplicito
-/*            Intent i1 = new Intent(Activity_MenuIncidencia.this, MapsActivity.class);
-            startActivity(i1);*/
+        if (view == btnMap) {
+            String map = "http://maps.google.com/maps?q=";
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(map));
+            startActivity(i);
         }
+        if (view == btnAudio) {
+            Intent i2 = new Intent(Activity_MenuIncidencia.this, RecordActivity.class);
+            i2.putExtra("idIncendicia", idI);
+            startActivityForResult(i2, 2);
+        }
+        if (view == BtnGuardar) {
+            dialogoGuardarIncidencia();
+        }
+
     }
 
+
+    //Yo creo que no hace nda, mas solo iniciar un metodo location?
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_PERMISSION_CAMERA) {
@@ -205,6 +197,7 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
             }
         } else if (requestCode == REQUEST_PERMISSION_WRITE_STORAGE) {
             if (permissions.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
             }
         } else if (requestCode == 1000) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -215,52 +208,35 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1 && resultCode == RESULT_OK){
-            imgBitmap = BitmapFactory.decodeFile(rutaImagen);
-            ivFoto.setImageBitmap(imgBitmap);
-        }
-        if(requestCode ==2 && resultCode == RESULT_OK){
-            //////add Audio a lst
-            String result=data.getStringExtra("datos");
-            lstA.add(result);
-        }
-    }
-
-    private void initUI() {
-
-        txtOperador = findViewById(R.id.txtOperador);
-        txtOperador.setText(nombreOperador);
-        GetDateTime = findViewById(R.id.txthora);
-        txtlatitud = findViewById(R.id.txtAreaLatitud);
-        txtlongitud = findViewById(R.id.txtAreaLongitud);
-        ivFoto = findViewById(R.id.ImagenFoto);
-        BTonSaveImagen = findViewById(R.id.botonGuardar);
-        BtonTomarFoto = findViewById(R.id.BtnTomarFotos);
-        txtreferencia = findViewById(R.id.edtxtReferencia);
-        //txtCedula= findViewById(R.id.txtCedula);
-        txtNombre=findViewById(R.id.txtNombreRepresentante);
-        btnConsultar=findViewById(R.id.btnConsultaR);
-        btnMap = findViewById(R.id.btnDireccion);
-        BtnGuardar = findViewById(R.id.GuardarBtn);
-    }
-
     public void checkPermise() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
+    }
+
+    private void PermisesCamara(){
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-            } else {
-                tomarFoto();
-            }
+            Toast.makeText(this, "Requiere permiso", Toast.LENGTH_SHORT).show();
+            checkPermise();
         } else {
             tomarFoto();
         }
     }
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            imgBitmap = BitmapFactory.decodeFile(rutaImagen);
+            ivFoto.setImageBitmap(imgBitmap);
+        }
+        if (requestCode == 2 && resultCode == RESULT_OK) {
+            String result = data.getStringExtra("datos");
+            lstA.add(result);
+        }
+    }
+
 
     private void locationStart() {
         LocationManager mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -280,16 +256,16 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
 
     }
 
-    private void mostrarDialogo(){
+    private void dialogoGuardarIncidencia() {
         new AlertDialog.Builder(this)
                 .setTitle("Mensaje de Alerta")
                 .setMessage("Finalizar la incidencia")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        int idOperador = getIntent().getIntExtra("id", 0);
-                        Incidente incidente = new Incidente(1, ilatitud,ilongitud ,date, 1, idOperador,txtreferencia.getText().toString(),txtNombre.getText().toString() );
-                        ServiceInsert controlDeEnvio = new ServiceInsert(lstA,lstF, incidente, Activity_MenuIncidencia.this);
+                        Incidente incidente = new Incidente(1, ilatitud, ilongitud, date, 1, idOperador, txtreferencia.getText().toString(), txtNombre.getText().toString());
+
+                        ServiceInsert controlDeEnvio = new ServiceInsert(lstA, lstF, incidente, Activity_MenuIncidencia.this);
                         controlDeEnvio.execute();
                         finalizar();
                     }
@@ -298,72 +274,68 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(Activity_MenuIncidencia.this,"Se Cancelo La Accion",Toast.LENGTH_LONG);
+                        Toast.makeText(Activity_MenuIncidencia.this, "Se Cancelo La Accion", Toast.LENGTH_LONG);
 
                     }
                 }).show()
         ;
     }
 
-    private void finalizar(){
-            new AlertDialog.Builder(this)
-            .setTitle("Informe")
-            .setMessage("¿Desea generar nuevo Incidente?")
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
+    private void finalizar() {
+        new AlertDialog.Builder(this)
+                .setTitle("Informe")
+                .setMessage("¿Desea generar nuevo Incidente?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        recreate();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                })
+                .show();
 
-                            recreate();
-                        }
-                    })
-                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            finish();
-                        }
-                    })
-                    .show();
-
-    ;}
+        ;
+    }
 
     public void tomarFoto() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-      //  if(intent.resolveActivity(getPackageManager())!=null){
-            File imagenArchivo = null;
-            try {
-                imagenArchivo= crearImagen();
-
-            }catch (IOException ex){
-                Log.e("Error", ex.toString());
-            }
-            if (imagenArchivo != null){
-                Uri fotoUri = FileProvider.getUriForFile(this,"com.cdp.camara.fileprovider",imagenArchivo);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT,fotoUri);
-                startActivityForResult(intent,1);
-            }
-
-       // }
-
+        //  if(intent.resolveActivity(getPackageManager())!=null){
+        File imagenArchivo = null;
+        try {
+            imagenArchivo = crearFileImagen();
+        } catch (IOException ex) {
+            Log.e("Error", ex.toString());
+        }
+        if (imagenArchivo != null) {
+            Uri fotoUri = FileProvider.getUriForFile(this, "com.cdp.camara.fileprovider", imagenArchivo);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT,fotoUri);
+            startActivityForResult(intent, 1);
+        }
     }
 
-    private File crearImagen() throws IOException {
-        int count=0, auto;
-        String nombreImagen=null;
-        for(int i=0; i<=0; i++ ){
-            auto=count++;
-            nombreImagen = "foto_"+nombreOperador
-                    +"_"+auto;
+
+    private File crearFileImagen() throws IOException {
+        int count = 0, auto;
+        String nombreImagen = null;
+        for (int i = 0; i <= 0; i++) {
+            auto = count++;
+            nombreImagen = "foto_" + nombreOperador
+                    + "_" + auto;
         }
-        File directorio=getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File imagen = File.createTempFile(nombreImagen,".png",directorio);
+        File directorio = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File imagen = File.createTempFile(nombreImagen, ".png", directorio);
         rutaImagen = imagen.getAbsolutePath();
         return imagen;
-
     }
 
-   // CAMARA\
+    // CAMARA\
 
-     //***************************************************  UBICACION **************************************
+    //***************************************************  UBICACION **************************************
 
     public class Localizacion implements LocationListener {
         Activity_MenuIncidencia mies_dinapen;
@@ -372,6 +344,7 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
         public Activity_MenuIncidencia getMies_Dinapen() {
             return mies_dinapen;
         }
+
         public void setMainActivity(Activity_MenuIncidencia mies_dinapen) {
             this.mies_dinapen = mies_dinapen;
         }
@@ -384,27 +357,30 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
             loc.getLongitude();
             sLatitud = null;
             sLongitud = null;
-            if(sLatitud==null){
+            if (sLatitud == null) {
                 sLatitud = String.valueOf(loc.getLatitude());
                 sLongitud = String.valueOf(loc.getLongitude());
                 txtlatitud.setText(sLatitud);
                 txtlongitud.setText(sLongitud);
-                ilatitud= (float) loc.getLatitude();
+                ilatitud = (float) loc.getLatitude();
                 ilongitud = (float) loc.getLongitude();
 
             }
 
         }
+
         @Override
         public void onProviderDisabled(String provider) {
             // Este metodo se ejecuta cuando el GPS es desactivado
             txtlatitud.setText(sLatitud);
         }
+
         @Override
         public void onProviderEnabled(String provider) {
             // Este metodo se ejecuta cuando el GPS es activado
             txtlongitud.setText(sLongitud);
         }
+
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
             switch (status) {
@@ -420,4 +396,4 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
             }
         }
     }
-    }
+}
