@@ -11,7 +11,7 @@ public class Incidente {
     private int idOrgOperador;
     private int idOperador;
 
-    public Incidente(int idPersona, float logitud, float latitud, String fecha, int idOrgOperador, int idOperador, String referencia, String nombrerepresentante) {
+    public Incidente(int idPersona, float latitud, float logitud , String fecha, int idOrgOperador, int idOperador, String referencia, String nombrerepresentante) {
         this.idPersona = idPersona;
         this.logitud = logitud;
         this.latitud = latitud;

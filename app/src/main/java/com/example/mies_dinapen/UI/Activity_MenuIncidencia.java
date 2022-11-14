@@ -172,7 +172,7 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
 
         }
         if (view == btnMap) {
-            String map = "http://maps.google.com/maps?q=";
+            String map = "http://maps.google.com/maps?q="+txtlatitud.getText()+","+txtlongitud.getText();
             Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(map));
             startActivity(i);
         }
