@@ -1,9 +1,10 @@
 package com.example.mies_dinapen.UI;
 
+import static com.example.mies_dinapen.UtilClass.MetodosConvert.convertBinarioAudio;
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,14 +38,23 @@ import androidx.core.content.FileProvider;
 
 import com.example.mies_dinapen.Audio.RecordActivity;
 import com.example.mies_dinapen.R;
+import com.example.mies_dinapen.Retrofit.BaseDato;
+import com.example.mies_dinapen.modelos.Audio;
 import com.example.mies_dinapen.modelos.Incidente;
-import com.example.mies_dinapen.service.ServiceInsert;
+import com.example.mies_dinapen.service.Servicios;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class Activity_MenuIncidencia extends AppCompatActivity implements View.OnClickListener {
@@ -70,6 +80,7 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
     public static String rutaImagen;
     public static Bitmap imgBitmap;
     public static int idOperador;
+    public static Servicios servicios;
 
     public static ArrayList<String> lstA;
     public static ArrayList<String> lstF;
@@ -92,6 +103,11 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
         setViewData();
         initEventClick();
         checkPermise();
+        initDataBase();
+    }
+
+    private void initDataBase(){
+        servicios = BaseDato.getConnetion().create(Servicios.class);
     }
 
     private void initUI() {
@@ -256,30 +272,7 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
 
     }
 
-    private void dialogoGuardarIncidencia() {
-        new AlertDialog.Builder(this)
-                .setTitle("Mensaje de Alerta")
-                .setMessage("Finalizar la incidencia")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Incidente incidente = new Incidente(1, ilatitud, ilongitud, date, 1, idOperador, txtreferencia.getText().toString(), txtNombre.getText().toString());
 
-                        ServiceInsert controlDeEnvio = new ServiceInsert(lstA, lstF, incidente, Activity_MenuIncidencia.this);
-                        controlDeEnvio.execute();
-                        finalizar();
-                    }
-
-                })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(Activity_MenuIncidencia.this, "Se Cancelo La Accion", Toast.LENGTH_LONG);
-
-                    }
-                }).show()
-        ;
-    }
 
     private void finalizar() {
         new AlertDialog.Builder(this)
@@ -395,5 +388,110 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
                     break;
             }
         }
+    }
+
+    private void insertIncidencia(Incidente incidente){
+        Call<String> call = servicios.postIncidenciaTabla(incidente);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.e("TAG", "onResponse: " + response.message() + " + " + response.body() );
+                if(!response.body().equals("")){
+                    insertFoto(response.body());
+                    insertarAudio(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e("TAG", "onResponse: " + t + " + " +call );
+            }
+        });
+    }
+
+
+
+    private void insertFoto(String body) {
+    }
+    private void insertarAudio(String id) {
+        for (int i = 0; i < lstA.size(); i++) {
+            String nombre = id + "_Audio_" + i;
+            String path = "https://miesdinapen.tk/api/Audios/Uploads/" + nombre + ".mp3";
+            String var = null;
+            try {
+                var = convertBinarioAudio(lstA.get(i));
+                Log.e("TAG", "insertarAudio: " + var );
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //
+            insertarAudioFile(nombre, var);
+            SimpleDateFormat simpleHourFormat = new SimpleDateFormat(" yyyy-MM-dd HH:mm:ss");
+            String date1 = simpleHourFormat.format(new Date());
+            Audio audio = new Audio(id, path, date1);
+            //
+            insertarAudioBase(audio);
+        }
+    }
+
+    private void insertarAudioFile(String nombre, String var){
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("audio", var);
+        params.put("nombre", nombre);
+
+        Call<String> call = servicios.postAudioFile(var, nombre);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.e("TAG", "onResponse: " + response.body() + call + response.raw() + response.message() );
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e("TAG", "onResponse: " , t );
+            }
+        });
+    }
+
+    private void insertarAudioBase(Audio audio){
+        Call<String>  call = servicios.postAudioBase(audio);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.e("TAG", "onResponse: " + response.body() );
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e("TAG", "onResponse: " , t );
+            }
+        });
+    }
+
+    private void dialogoGuardarIncidencia() {
+        new AlertDialog.Builder(this)
+                .setTitle("Mensaje de Alerta")
+                .setMessage("Finalizar la incidencia")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Incidente incidente = new Incidente(1, ilatitud, ilongitud, date, 1, idOperador, txtreferencia.getText().toString(), txtNombre.getText().toString());
+                        insertIncidencia(incidente);
+
+                        //ServiceInsert controlDeEnvio = new ServiceInsert(lstA, lstF, incidente, Activity_MenuIncidencia.this);
+                        // controlDeEnvio.execute();
+                        //finalizar();
+                    }
+
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(Activity_MenuIncidencia.this, "Se Cancelo La Accion", Toast.LENGTH_LONG);
+
+                    }
+                }).show()
+        ;
     }
 }

@@ -50,12 +50,15 @@ public class ServiceInsert extends AsyncTask<Void,Void,String>{
     String KEY_IMAGE = "foto";
     String KEY_NOMBRE = "nombre";
     String KEY_AUDIO = "audio";
+
     private static final String Url1 = "https://miesdinapen.tk/api/Incidencias/insert.php";
     private static final String Url2 = "https://miesdinapen.tk/api/Fotos/insert.php";
     private static final String Url3 = "https://miesdinapen.tk/api/Audios/insert.php";
-    private static final String Url4 = "https://miesdinapen.tk/api/Incidencias/hasIntervencion.php";
+
+
     private static final String UPLOAD_URL= "https://miesdinapen.tk/api/Fotos/Upload_F.php";
     private static final String UPLOAD_URL2 = "https://miesdinapen.tk/api/Audios/Upload_A.php";
+
 
     public ServiceInsert(ArrayList<String> audios, ArrayList<String> fotos, Incidente incidente, Context context) {
         this.audios = audios;
@@ -79,6 +82,7 @@ public class ServiceInsert extends AsyncTask<Void,Void,String>{
     @Override
     protected String doInBackground(Void... voids) {
         String alerta="";
+        //
         id = insertarIncidencia();
         if(id!="") {
 
@@ -91,10 +95,12 @@ public class ServiceInsert extends AsyncTask<Void,Void,String>{
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                //
                 uploadAudio(nombre, var);
                 SimpleDateFormat simpleHourFormat = new SimpleDateFormat(" yyyy-MM-dd HH:mm:ss");
                 String date1 = simpleHourFormat.format(new Date());
                 Audio audio = new Audio(id, path, date1);
+                //
                 insertarAudio(audio);
             }
             for (int q = 0; q < fotos.size(); q++) {
@@ -102,10 +108,12 @@ public class ServiceInsert extends AsyncTask<Void,Void,String>{
                 String nombre = id + "_Fotos_" + q;
                 String path = "https://miesdinapen.tk/api/Fotos/Uploads/" + nombre + ".png";
                 String var = getStringImagen(bits);
+                //
                 uploadImage(nombre, var);
                 SimpleDateFormat simpleHourFormat = new SimpleDateFormat(" yyyy-MM-dd HH:mm:ss");
                 String date1 = simpleHourFormat.format(new Date());
                 Foto foto = new Foto(id, path, date1);
+                //
                 insertarFoto(foto);
 
             }
@@ -126,8 +134,8 @@ public class ServiceInsert extends AsyncTask<Void,Void,String>{
             url = new URL(wsURL);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             //crear el objeto json para enviar por POST
-            String query ="{\n" +
-                    ""+"\"IDOperador\":"+ incidente.getIdOperador() +"," +
+            String query ="{\n"
+/*                    ""+"\"IDOperador\":"+ incidente.getIdOperador() +"," +
                     "\n \"IDOrganCooperante\":"+ incidente.getIdOrgOperador()+","+
                     "\n \"IDPersonaIntervenida\":"+ incidente.getIdPersona()+","+
                     "\n \"Latitud\":"+ incidente.getLatitud()+","+
@@ -135,7 +143,7 @@ public class ServiceInsert extends AsyncTask<Void,Void,String>{
                     "\n \"Referencia\":\""+ incidente.getReferencia()+"\"," +
                     "\n \"FechaRegistro\":\""+ incidente.getFecha()+"\"," +
                     "\n \"NombreRepresentante\":\""+ incidente.getNombrerepresentante()+"\"" +
-                    "\n}"
+                    "\n}"*/
                     ;
             System.out.println(query);
             //DEFINIR PARAMETROS DE CONEXION
@@ -264,11 +272,11 @@ public class ServiceInsert extends AsyncTask<Void,Void,String>{
             url = new URL(wsURL);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             //crear el objeto json para enviar por POST
-            String query ="{\n" +
+            String query ="{\n"/* +
                     ""+"\"IDIntervencion\":"+ audio.getIdIncidete() +"," +
                     "\n \"Audio\":\""+ audio.getFiles()+"\","+
                     "\n \"FechaRegistro\":\""+ audio.getFechaRegistro()+"\"" +
-                    "\n}"
+                    "\n}"*/
                     ;
             System.out.println(query);
             //DEFINIR PARAMETROS DE CONEXION

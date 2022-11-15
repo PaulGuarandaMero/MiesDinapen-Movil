@@ -16,7 +16,7 @@ import com.example.mies_dinapen.R;
 import com.example.mies_dinapen.Retrofit.BaseDato;
 import com.example.mies_dinapen.UI.Adaptores.Adaptador_HistorialInci;
 import com.example.mies_dinapen.modelos.Item_historial;
-import com.example.mies_dinapen.service.OperadorUser;
+import com.example.mies_dinapen.service.Servicios;
 
 import java.util.ArrayList;
 
@@ -30,7 +30,7 @@ public class Activity_ConsultarCedula extends AppCompatActivity implements View.
     Button consultaHis;
     EditText cedula;
     TextView contador;
-    OperadorUser operadorUser;
+    Servicios servicios;
     RecyclerView recyclerView;
     Adaptador_HistorialInci adaptador_historialInci;
 
@@ -55,14 +55,14 @@ public class Activity_ConsultarCedula extends AppCompatActivity implements View.
     }
 
     private void initDataBase(){
-        operadorUser = BaseDato.getConnetion().create(OperadorUser.class);
+        servicios = BaseDato.getConnetion().create(Servicios.class);
     }
 
     @Override
     public void onClick(View view) {
         if(view == consultaHis){
             if(toValidateNoIdentificacion(cedula.getText().toString())){
-                Call<ArrayList<Item_historial>> call = operadorUser.getHistorialIncidencia(cedula.getText().toString());
+                Call<ArrayList<Item_historial>> call = servicios.getHistorialIncidencia(cedula.getText().toString());
                 call.enqueue(new Callback<ArrayList<Item_historial>>() {
                     @Override
                     public void onResponse(Call<ArrayList<Item_historial>> call, Response<ArrayList<Item_historial>> response) {

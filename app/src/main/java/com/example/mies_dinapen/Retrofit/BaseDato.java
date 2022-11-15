@@ -2,6 +2,9 @@ package com.example.mies_dinapen.Retrofit;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import org.json.JSONArray;
 
 import retrofit2.Retrofit;
@@ -15,7 +18,9 @@ public class BaseDato {
 
     public static Retrofit getConnetion(){
         if (retrofit==null){
-            retrofit = new Retrofit.Builder().baseUrl(URL).addConverterFactory(GsonConverterFactory.create()).build();
+            Gson gson = new GsonBuilder().setLenient().create();
+
+            retrofit = new Retrofit.Builder().baseUrl(URL).addConverterFactory(GsonConverterFactory.create(gson)).build();
         }
         return retrofit;
     }

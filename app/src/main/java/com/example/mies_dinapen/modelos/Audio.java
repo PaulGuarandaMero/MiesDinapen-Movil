@@ -1,47 +1,47 @@
 package com.example.mies_dinapen.modelos;
 
 public class Audio {
-    String idIncidete;
-    String idAudio;
-    String files;
-    String fechaRegistro;
+    String IDIncidente;
+    String IDIntervencion;
+    String Audio;
+    String FechaRegistro;
 
+    public Audio(String IDIntervencion, String audio, String fechaRegistro) {
+        this.IDIncidente = IDIncidente;
+        this.IDIntervencion = IDIntervencion;
+        Audio = audio;
+        FechaRegistro = fechaRegistro;
+    }
 
-    public Audio(String idIncidete, String files, String fechaRegistro) {
-        this.idIncidete = idIncidete;
-        this.files = files;
-        this.fechaRegistro = fechaRegistro;
+    public String getIDIncidente() {
+        return IDIncidente;
+    }
+
+    public void setIDIncidente(String IDIncidente) {
+        this.IDIncidente = IDIncidente;
+    }
+
+    public String getIDIntervencion() {
+        return IDIntervencion;
+    }
+
+    public void setIDIntervencion(String IDIntervencion) {
+        this.IDIntervencion = IDIntervencion;
+    }
+
+    public String getAudio() {
+        return Audio;
+    }
+
+    public void setAudio(String audio) {
+        Audio = audio;
     }
 
     public String getFechaRegistro() {
-        return fechaRegistro;
+        return FechaRegistro;
     }
 
     public void setFechaRegistro(String fechaRegistro) {
-        this.fechaRegistro = fechaRegistro;
-    }
-
-    public String getIdIncidete() {
-        return idIncidete;
-    }
-
-    public void setIdIncidete(String idIncidete) {
-        this.idIncidete = idIncidete;
-    }
-
-    public String getIdAudio() {
-        return idAudio;
-    }
-
-    public void setIdAudio(String idAudio) {
-        this.idAudio = idAudio;
-    }
-
-    public String getFiles() {
-        return files;
-    }
-
-    public void setFiles(String files) {
-        this.files = files;
+        FechaRegistro = fechaRegistro;
     }
 }

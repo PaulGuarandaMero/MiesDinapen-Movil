@@ -2,88 +2,104 @@ package com.example.mies_dinapen.modelos;
 
 public class Incidente {
 
-    private int idPersona;
-    private float logitud;
-    private float latitud;
-    private String fecha;
-    private String referencia;
-    private String nombrerepresentante;
-    private int idOrgOperador;
-    private int idOperador;
+    private int IDPersonaIntervenida;
+    private float Latitud;
+    private float Longitud;
+    private String FechaRegistro;
+    private int IDOrganCooperante;
+    private int IDOperador;
+    private String Referencia;
+    private String NombreRepresentante;
 
-    public Incidente(int idPersona, float latitud, float logitud , String fecha, int idOrgOperador, int idOperador, String referencia, String nombrerepresentante) {
-        this.idPersona = idPersona;
-        this.logitud = logitud;
-        this.latitud = latitud;
-        this.fecha = fecha;
-        this.idOrgOperador = idOrgOperador;
-        this.idOperador = idOperador;
-        this.referencia = referencia;
-        this.nombrerepresentante=nombrerepresentante;
-
+    public Incidente(int IDPersonaIntervenida, float latitud, float logitud, String fechaRegistro, int IDOrganCooperante, int IDOperador, String referencia, String nombreRepresentante) {
+        this.IDPersonaIntervenida = IDPersonaIntervenida;
+        Latitud = latitud;
+        Longitud = logitud;
+        FechaRegistro = fechaRegistro;
+        this.IDOrganCooperante = IDOrganCooperante;
+        this.IDOperador = IDOperador;
+        Referencia = referencia;
+        NombreRepresentante = nombreRepresentante;
     }
 
-    public String getNombrerepresentante() {
-        return nombrerepresentante;
+    public int getIDPersonaIntervenida() {
+        return IDPersonaIntervenida;
     }
 
-    public void setNombrerepresentante(String nombrerepresentante) {
-        this.nombrerepresentante = nombrerepresentante;
-    }
-
-    public String getReferencia() {
-        return referencia;
-    }
-
-    public void setReferencia(String referencia) {
-        this.referencia = referencia;
-    }
-
-    public int getIdPersona() {
-        return idPersona;
-    }
-
-    public void setIdPersona(int idPersona) {
-        this.idPersona = idPersona;
-    }
-
-    public float getLogitud() {
-        return logitud;
-    }
-
-    public void setLogitud(float logitud) {
-        this.logitud = logitud;
+    public void setIDPersonaIntervenida(int IDPersonaIntervenida) {
+        this.IDPersonaIntervenida = IDPersonaIntervenida;
     }
 
     public float getLatitud() {
-        return latitud;
+        return Latitud;
     }
 
     public void setLatitud(float latitud) {
-        this.latitud = latitud;
+        Latitud = latitud;
     }
 
-    public String getFecha() {
-        return fecha;
+    public float getLongitud() {
+        return Longitud;
     }
 
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
+    public void setLongitud(float longitud) {
+        Longitud = longitud;
     }
 
-    public int getIdOrgOperador() {
-        return idOrgOperador;
+    public String getFechaRegistro() {
+        return FechaRegistro;
     }
 
-    public void setIdOrgOperador(int idOrgOperador) {
-        this.idOrgOperador = idOrgOperador;
+    public void setFechaRegistro(String fechaRegistro) {
+        FechaRegistro = fechaRegistro;
     }
 
-    public int getIdOperador() {
-        return idOperador;
+    public int getIDOrganCooperante() {
+        return IDOrganCooperante;
     }
 
-    public void setIdOperador(int idOperador) {
-        this.idOperador = idOperador;
+    public void setIDOrganCooperante(int IDOrganCooperante) {
+        this.IDOrganCooperante = IDOrganCooperante;
+    }
+
+    public int getIDOperador() {
+        return IDOperador;
+    }
+
+    public void setIDOperador(int IDOperador) {
+        this.IDOperador = IDOperador;
+    }
+
+    public String getReferencia() {
+        return Referencia;
+    }
+
+    public void setReferencia(String referencia) {
+        Referencia = referencia;
+    }
+
+    public String getNombreRepresentante() {
+        return NombreRepresentante;
+    }
+
+    public void setNombreRepresentante(String nombreRepresentante) {
+        NombreRepresentante = nombreRepresentante;
+    }
+
+    @Override
+    public String toString() {
+        return "Incidente{" +
+                "IDPersonaIntervenida=" + IDPersonaIntervenida +
+                ", Latitud=" + Latitud +
+                ", Longitud=" + Longitud +
+                ", FechaRegistro='" + FechaRegistro + '\'' +
+                ", IDOrganCooperante=" + IDOrganCooperante +
+                ", IDOperador=" + IDOperador +
+                ", Referencia='" + Referencia + '\'' +
+                ", NombreRepresentante='" + NombreRepresentante + '\'' +
+                '}';
     }
 }
+
+
+

@@ -13,7 +13,7 @@ import android.widget.Toast;
 import com.example.mies_dinapen.R;
 import com.example.mies_dinapen.Retrofit.BaseDato;
 import com.example.mies_dinapen.modelos.Operador;
-import com.example.mies_dinapen.service.OperadorUser;
+import com.example.mies_dinapen.service.Servicios;
 
 import java.util.HashMap;
 
@@ -26,7 +26,7 @@ public class Activity_InciarSesion extends AppCompatActivity implements View.OnC
     EditText passwordd;
     Button ingresarIn;
 
-    OperadorUser operadorUser;
+    Servicios servicios;
     Operador Operador;
 
     @Override
@@ -44,7 +44,7 @@ public class Activity_InciarSesion extends AppCompatActivity implements View.OnC
         ingresarIn.setOnClickListener(this);
     }
     private void initDataBase(){
-        operadorUser = BaseDato.getConnetion().create(OperadorUser.class);
+        servicios = BaseDato.getConnetion().create(Servicios.class);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class Activity_InciarSesion extends AppCompatActivity implements View.OnC
     }
 
     private void getConsulta(){
-        Call<Operador> call = operadorUser.getOperoador(getInputData());
+        Call<Operador> call = servicios.getOperoador(getInputData());
         call.enqueue(new Callback<Operador>() {
             @Override
             public void onResponse(Call<Operador> call, Response<Operador> response) {
