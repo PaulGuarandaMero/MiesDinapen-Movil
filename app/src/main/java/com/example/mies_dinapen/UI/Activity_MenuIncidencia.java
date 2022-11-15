@@ -412,6 +412,7 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
                 if(!response.body().equals("")){
                     insertFoto(response.body());
                     insertarAudio(response.body());
+                    Toast.makeText(Activity_MenuIncidencia.this, "Id de la Incidencia " + response.body() , Toast.LENGTH_SHORT).show();
                 }
             }
 
