@@ -1,6 +1,7 @@
 package com.example.mies_dinapen.UI;
 
-import static com.example.mies_dinapen.UtilClass.MetodosConvert.convertBinarioAudio;
+import static com.example.mies_dinapen.UtilClass.MetodosConvert.convertAudioEncoded;
+import static com.example.mies_dinapen.UtilClass.MetodosConvert.convertImageEncoded;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -40,6 +41,7 @@ import com.example.mies_dinapen.Audio.RecordActivity;
 import com.example.mies_dinapen.R;
 import com.example.mies_dinapen.Retrofit.BaseDato;
 import com.example.mies_dinapen.modelos.Audio;
+import com.example.mies_dinapen.modelos.Foto;
 import com.example.mies_dinapen.modelos.Incidente;
 import com.example.mies_dinapen.service.Servicios;
 
@@ -61,7 +63,7 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
 
 
 
-    TextView txtlongitud , txtOperador , txtlatitud , GetDateTime;
+    TextView txtlongitud , txtOperador , txtlatitud , GetDateTime, contadorAudios,contadorFotos;
     EditText txtreferencia , txtNombre;
     Button btnConsultar , btnAudio, BtnGuardar;
     ImageButton BtonTomarFoto, BTonSaveImagen, btnMap;
@@ -119,7 +121,8 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
         txtlatitud = findViewById(R.id.txtAreaLatitud);
         txtlongitud = findViewById(R.id.txtAreaLongitud);
         txtOperador = findViewById(R.id.txtOperador);
-
+        contadorAudios=findViewById(R.id.CantidaAudios);
+        contadorFotos=findViewById(R.id.CantidaFotos);
         BTonSaveImagen = findViewById(R.id.botonGuardar);
         BtonTomarFoto = findViewById(R.id.BtnTomarFotos);
         btnConsultar = findViewById(R.id.btnConsultaR);
@@ -174,8 +177,9 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            Toast.makeText(Activity_MenuIncidencia.this, "Agregado", Toast.LENGTH_LONG);
+                            Toast.makeText(Activity_MenuIncidencia.this, "Agregado", Toast.LENGTH_LONG).show();
                             lstF.add(rutaImagen);
+                            contadorFotos.setText("Fotos: "+lstF.size());
                         }
                     })
                     .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -203,8 +207,6 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
 
     }
 
-
-    //Yo creo que no hace nda, mas solo iniciar un metodo location?
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_PERMISSION_CAMERA) {
@@ -250,6 +252,7 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
         if (requestCode == 2 && resultCode == RESULT_OK) {
             String result = data.getStringExtra("datos");
             lstA.add(result);
+            contadorAudios.setText(lstA.size()+"");
         }
     }
 
@@ -273,6 +276,16 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
     }
 
 
+    private void cleanView(){
+        lstF.clear();
+        contadorFotos.setText(lstF.size()+"");
+        lstA.clear();
+        contadorAudios.setText(lstA.size()+"");
+        txtreferencia.setText("");
+        txtNombre.setText("");
+        ivFoto.setImageBitmap(null);
+
+    }
 
     private void finalizar() {
         new AlertDialog.Builder(this)
@@ -281,7 +294,7 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        recreate();
+                        cleanView();
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -291,7 +304,6 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
                     }
                 })
                 .show();
-
         ;
     }
 
@@ -312,6 +324,7 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
     }
 
 
+    //OJO AQUI ES DONDE SE CAMBIA LA RUTA O LA PRIVACIDA DEL ARCHIVO //TODO: getExternalFilesDir
     private File crearFileImagen() throws IOException {
         int count = 0, auto;
         String nombreImagen = null;
@@ -411,15 +424,65 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
 
 
 
-    private void insertFoto(String body) {
+    private void insertFoto(String id) {
+        for (int q = 0; q < lstF.size(); q++) {
+            Bitmap bits = BitmapFactory.decodeFile(lstF.get(q));
+            String nombre = id + "_Fotos_" + q;
+            String path = "https://miesdinapen.tk/api/Fotos/Uploads/" + nombre + ".png";
+            String var = convertImageEncoded(bits);
+            //
+            insertarFotoFile(nombre, var);
+            SimpleDateFormat simpleHourFormat = new SimpleDateFormat(" yyyy-MM-dd HH:mm:ss");
+            String date1 = simpleHourFormat.format(new Date());
+            Foto foto = new Foto(id, path, date1);
+            //
+            insertarFotoBase(foto);
+
+        }
     }
+
+    private void insertarFotoFile(String nombre, String var){
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("foto", var);
+        params.put("nombre", nombre);
+
+        Call<String> call = servicios.postFotoFile(var, nombre);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.e("TAG", "onResponse: " + response.body() + call + response.raw() + response.message() );
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e("TAG", "onResponse: " , t );
+            }
+        });
+    }
+
+    private void insertarFotoBase(Foto foto){
+        Call<String> call = servicios.postFotoBase(foto);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.e("TAG", "onResponse: " + response.body() );
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e("TAG", "onResponse: " , t );
+            }
+        });
+    }
+
     private void insertarAudio(String id) {
         for (int i = 0; i < lstA.size(); i++) {
             String nombre = id + "_Audio_" + i;
             String path = "https://miesdinapen.tk/api/Audios/Uploads/" + nombre + ".mp3";
             String var = null;
             try {
-                var = convertBinarioAudio(lstA.get(i));
+                var = convertAudioEncoded(lstA.get(i));
                 Log.e("TAG", "insertarAudio: " + var );
             } catch (IOException e) {
                 e.printStackTrace();
@@ -478,10 +541,7 @@ public class Activity_MenuIncidencia extends AppCompatActivity implements View.O
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Incidente incidente = new Incidente(1, ilatitud, ilongitud, date, 1, idOperador, txtreferencia.getText().toString(), txtNombre.getText().toString());
                         insertIncidencia(incidente);
-
-                        //ServiceInsert controlDeEnvio = new ServiceInsert(lstA, lstF, incidente, Activity_MenuIncidencia.this);
-                        // controlDeEnvio.execute();
-                        //finalizar();
+                        finalizar();
                     }
 
                 })

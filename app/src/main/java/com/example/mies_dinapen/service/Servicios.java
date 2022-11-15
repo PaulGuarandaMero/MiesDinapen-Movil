@@ -1,5 +1,6 @@
 package com.example.mies_dinapen.service;
 import com.example.mies_dinapen.modelos.Audio;
+import com.example.mies_dinapen.modelos.Foto;
 import com.example.mies_dinapen.modelos.Incidente;
 import com.example.mies_dinapen.modelos.Item_historial;
 import com.example.mies_dinapen.modelos.Operador;
@@ -37,6 +38,13 @@ public interface Servicios {
 
     @POST("api/Audios/insert.php")
     public abstract Call<String> postAudioBase(@Body Audio audio);
+
+    @POST("api/Fotos/Upload_F.php")
+    @FormUrlEncoded
+    public abstract Call<String> postFotoFile(@Field("foto") String foto , @Field("nombre") String nombre );
+
+    @POST("api/Fotos/insert.php")
+    public abstract Call<String> postFotoBase(@Body Foto foto);
 
 
 }

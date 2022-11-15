@@ -202,7 +202,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="start">
                 <Button
                     android:id="@+id/btnConsultaR"
                     android:layout_width="wrap_content"
@@ -210,7 +210,7 @@
                     android:background="@drawable/btn_fondo_color"
                     android:drawableEnd="@drawable/ic_baseline_search_24"
                     android:text="cedula"
-                    android:layout_margin="10dp"/>
+                    android:layout_marginTop="5dp"/>
                 <Button
                     android:id="@+id/btnAudio"
                     android:layout_width="wrap_content"
@@ -218,7 +218,23 @@
                     android:background="@drawable/btn_fondo_color"
                     android:drawableEnd="@drawable/ic_mic_24"
                     android:text="Grabar"
-                    android:layout_margin="10dp"/>
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="2dp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Audios"/>
+                    <TextView
+                        android:id="@+id/CantidaAudios"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"/>
+                </LinearLayout>
             </LinearLayout>
 
 
@@ -253,14 +269,30 @@
                     android:orientation="vertical"
                     android:gravity="center"
                     android:layout_weight="1"
-                    android:background="@drawable/shape_imageview_corners"
-                    android:layout_margin="10dp">
-                    <ImageView
-                        android:id="@+id/ImagenFoto"
+                    android:layout_margin="2dp">
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="15dp"
-                        />
+                        android:layout_weight="1"
+                        android:background="@drawable/shape_imageview_corners">
+                        <ImageView
+                            android:id="@+id/ImagenFoto"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="15dp" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:orientation="vertical"
+                        android:gravity="center">
+                        <TextView
+                            android:id="@+id/CantidaFotos"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Fotos: 0"/>
+                    </LinearLayout>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -271,7 +303,6 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="5dp"
                         android:layout_gravity="center"
                         android:background="@drawable/shape_textview_title_them"
                         android:text="Evidencia Fotografica"
@@ -283,7 +314,8 @@
                         android:id="@+id/BtnTomarFotos"
                         android:layout_width="100dp"
                         android:layout_height="50dp"
-                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="2dp"
                         android:background="@drawable/btn_fondo_color"
                         android:src="@drawable/ic_baseline_photo_camera_white" />
 

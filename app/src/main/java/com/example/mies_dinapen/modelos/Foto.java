@@ -1,25 +1,15 @@
 package com.example.mies_dinapen.modelos;
 
 public class Foto {
-    String idIncidentes;
     String idFotos;
-    String file;
-    String fechaRegistro;
+    String IDIntervencion;
+    String FotoIncidente;
+    String FechaRegistro;
 
-
-
-    public Foto(String idIncidentes, String file, String fechaRegistro) {
-        this.idIncidentes = idIncidentes;
-        this.file = file;
-        this.fechaRegistro = fechaRegistro;
-    }
-
-    public String getIdIncidentes() {
-        return idIncidentes;
-    }
-
-    public void setIdIncidentes(String idIncidentes) {
-        this.idIncidentes = idIncidentes;
+    public Foto(String IDIntervencion, String fotoIncidente, String fechaRegistro) {
+        this.IDIntervencion = IDIntervencion;
+        FotoIncidente = fotoIncidente;
+        FechaRegistro = fechaRegistro;
     }
 
     public String getIdFotos() {
@@ -30,19 +20,27 @@ public class Foto {
         this.idFotos = idFotos;
     }
 
-    public String getFile() {
-        return file;
+    public String getIDIntervencion() {
+        return IDIntervencion;
     }
 
-    public void setFile(String file) {
-        this.file = file;
+    public void setIDIntervencion(String IDIntervencion) {
+        this.IDIntervencion = IDIntervencion;
+    }
+
+    public String getFotoIncidente() {
+        return FotoIncidente;
+    }
+
+    public void setFotoIncidente(String fotoIncidente) {
+        FotoIncidente = fotoIncidente;
     }
 
     public String getFechaRegistro() {
-        return fechaRegistro;
+        return FechaRegistro;
     }
 
     public void setFechaRegistro(String fechaRegistro) {
-        this.fechaRegistro = fechaRegistro;
+        FechaRegistro = fechaRegistro;
     }
 }
