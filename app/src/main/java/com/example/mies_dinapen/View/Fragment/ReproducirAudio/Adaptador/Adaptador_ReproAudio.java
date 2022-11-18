@@ -67,7 +67,12 @@ public class Adaptador_ReproAudio extends RecyclerView.Adapter<Adaptador_ReproAu
             delete = itemView.findViewById(R.id.I_AudioL_Button_Delete);
 
             mediaPlayer = new MediaPlayer();
-
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    play.setBackground(activityContenedor.getResources().getDrawable(R.drawable.ic_play_24));
+                }
+            });
             play.setOnClickListener(this);
             delete.setOnClickListener(this);
         }
