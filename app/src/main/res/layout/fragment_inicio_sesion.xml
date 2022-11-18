@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".View.Fragment.InicioSesion.InicioSesionFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_margin="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="50px"
+            android:text="@string/InicioS_Textview_Title" />
+
+        <EditText
+            android:id="@+id/F_IniciS_Edittext_cedula"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:ems="10"
+            android:maxLength="10"
+            android:inputType="text"
+            android:hint="@string/InicioS_Editext_Cedula"
+            android:text="0955192000"/>
+
+        <EditText
+            android:id="@+id/F_IniciS_Edittext_contraseña"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:hint="@string/InicioS_Editext_Contraseña"
+            android:text="123"/>
+
+        <Button
+            android:id="@+id/F_IniciS_Button_Ingresar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="50px"
+            android:text="@string/InicioS_Button_Ingresar" />
+
+    </LinearLayout>
+
+</FrameLayout>

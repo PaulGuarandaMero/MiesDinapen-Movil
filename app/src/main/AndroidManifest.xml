@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.mies_dinapen">
-    <!-- PERMISOS DE LA CAMARA -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"  package="com.example.mies_dinapen">
+
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28" /> <!-- PERMISOS DE LA MICROFONO -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
-    <queries />
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -20,21 +14,15 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_dinapen_blanco"
+        android:icon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MiesDinapen">
+
         <activity
-            android:name=".UI.Activity_ConsultarCedula"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".UI.Activity_InciarSesion"
+            android:name=".View.Activity.Activity_Contenedor"
             android:exported="true">
             <meta-data
                 android:name="android.app.lib_name"
@@ -45,47 +33,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <meta-data
-            android:name="com.google.android.actions"
-            android:resource="@xml/file_paths" />
-
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="com.cdp.camara.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
-        <!--
-             TODO: Before you run your application, you need a Google Maps API key.
-
-             To get one, follow the directions here:
-
-                https://developers.google.com/maps/documentation/android-sdk/get-api-key
-
-             Once you have your API key (it starts with "AIza"), define a new property in your
-             project's local.properties file (e.g. MAPS_API_KEY=Aiza...), and replace the
-             "YOUR_API_KEY" string in this file with "${MAPS_API_KEY}".
-        -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDL5pgpXqhvM1UvHh_HHpas1rq0hlv9R84" />
-        <activity
-            android:name=".Audio.RecordActivity"
-            android:exported="false"
-            android:label=" Grabación de Audio" />
-        <activity
-            android:name=".UI.Activity_MenuIncidencia"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-
-        <meta-data
-            android:name="com.google.firebase.ml.vision.DEPENDENCIES"
-            android:value="face" />
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"

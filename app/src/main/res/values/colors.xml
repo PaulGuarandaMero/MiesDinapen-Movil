@@ -15,8 +15,11 @@
     <color name="fondo_mies">#F2F2F2</color>
     <color name="item_mies">#899B9F</color>
     <color name="title_mies">#93BBBF</color>
+
+
     <color name="ligth_red">#F54B64</color>
     <color name="ligth_orange">#F78361</color>
+    <color name="ligth_blue">#6177FC</color>
     <color name="dark_black">#242a38</color>
     <color name="dark_gray">#4e586e</color>
     <color name="whitebone">#F2F2F2</color>

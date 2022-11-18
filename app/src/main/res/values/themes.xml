@@ -13,6 +13,7 @@
 
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/dark_gray</item>
+        <item name="android:textColor">@color/dark_gray</item>
         <!-- Status bar color. -->
         <!-- Customize your theme here. -->
 
