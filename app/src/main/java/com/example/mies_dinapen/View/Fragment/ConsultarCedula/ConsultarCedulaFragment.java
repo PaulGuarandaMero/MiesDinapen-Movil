@@ -71,6 +71,7 @@ public class ConsultarCedulaFragment extends Fragment implements View.OnClickLis
                             viewMain.FConsultarCTextViewContador.setText("No existen incidencia");
                         }
                         adaptador_Incidencia_historial.setDatos(datos);
+                        adaptador_Incidencia_historial.notifyDataSetChanged();
                     }
 
                     @Override
