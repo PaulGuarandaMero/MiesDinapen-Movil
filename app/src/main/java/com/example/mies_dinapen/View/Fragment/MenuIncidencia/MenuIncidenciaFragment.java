@@ -144,7 +144,8 @@ public class MenuIncidenciaFragment extends Fragment implements View.OnClickList
                 + " " + activity.getOperador().getOperaApellido1()
                 + " " + activity.getOperador().getOperaApellido2();
         idOperador = activity.getOperador().getIDOperador();
-        viewMain.FMenuITextViewCantidadAudios.setText("Audios:\n " + activity.getLstA().size()+"");
+        viewMain.FMenuITextViewCantidadAudios.setText("Audios:\n " + activity.getLstA().size());
+        viewMain.FMenuITextViewCantidadFotos.setText("Fotos: " + activity.getLstF().size());
     }
 
     private void setViewData(){

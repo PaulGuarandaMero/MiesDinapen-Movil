@@ -86,12 +86,14 @@ public class Adaptador_ReproAudio extends RecyclerView.Adapter<Adaptador_ReproAu
             if(view == play){
                 if(mediaPlayer.isPlaying()) {
                     mediaPlayer.pause();
+                    play.setBackground(activityContenedor.getResources().getDrawable(R.drawable.ic_play_24));
                 } else {
                     try {
                         mediaPlayer.reset();
                         mediaPlayer.setDataSource(activityContenedor.getLstA().get(getAdapterPosition()));
                         mediaPlayer.prepare();
                         mediaPlayer.start();
+                        play.setBackground(activityContenedor.getResources().getDrawable(R.drawable.ic_pause_24));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
