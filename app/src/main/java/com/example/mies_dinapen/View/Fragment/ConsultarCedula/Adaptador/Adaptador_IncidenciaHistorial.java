@@ -63,7 +63,7 @@ public class Adaptador_IncidenciaHistorial extends RecyclerView.Adapter<Adaptado
 
         public void bindata(Item_historial item_historial) {
             nombre.setText(item_historial.getOperador().getOperaNombres()+" "+item_historial.getOperador().getOperaApellido1());
-            fecha.setText(item_historial.getFechaIntervencion());
+            fecha.setText(item_historial.getFechaRegistro());
             estado.setText(item_historial.getEstado());
             id.setText(item_historial.getIDIntervencion());
 

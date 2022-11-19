@@ -95,7 +95,7 @@ public class GrabarAudioFragment extends Fragment implements View.OnClickListene
     }
 
     private String getDate(){
-        SimpleDateFormat formatter = new SimpleDateFormat("_yyyy_MM_dd_hh_mm_ss", Locale.CANADA);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss", Locale.CANADA);
         return formatter.format(new Date());
     }
 

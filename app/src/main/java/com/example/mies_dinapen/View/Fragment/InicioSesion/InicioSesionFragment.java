@@ -1,5 +1,7 @@
 package com.example.mies_dinapen.View.Fragment.InicioSesion;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -42,24 +44,43 @@ public class InicioSesionFragment extends Fragment implements View.OnClickListen
         viewMain = FragmentInicioSesionBinding.inflate(getLayoutInflater());
         activity = (Activity_Contenedor) getActivity();
         viewMain.FIniciSButtonIngresar.setOnClickListener(this);
+        getPreference();
         return viewMain.getRoot();
+    }
+
+    private void getPreference() {
+        viewMain.FIniciSButtonIngresar.setEnabled(false);
+        SharedPreferences preferences = activity.getSharedPreferences("TokenSesion", Context.MODE_PRIVATE);
+        String cedula = preferences.getString("cedula", null);
+        String contra = preferences.getString("contra", null);
+        if(preferences.getBoolean("token", false)){
+            HashMap<String, String> datosInput = new HashMap<>();
+            datosInput.put("OperaNCedula", cedula);
+            datosInput.put("password", contra);
+            getConsulta(datosInput);
+        }else{
+            Toast.makeText(activity, "Operador no Identificado", Toast.LENGTH_SHORT).show();
+            viewMain.FIniciSButtonIngresar.setEnabled(true);
+        }
+
     }
 
     @Override
     public void onClick(View view) {
         if(view == viewMain.FIniciSButtonIngresar){
-            getConsulta(view);
+            getConsulta(getInputData());
         }
     }
 
-    private void getConsulta(View view) {
-        Call<Operador> call = activity.getServicios().getOperoador(getInputData());
+    private void getConsulta(HashMap<String, String> datosInput) {
+        Call<Operador> call = activity.getServicios().getOperoador(datosInput);
         call.enqueue(new Callback<Operador>() {
             @Override
             public void onResponse(Call<Operador> call, Response<Operador> response) {
                 Log.e("TAG", "onResponse: "+  response.body());
                 activity.setOperador(response.body());
-                nav_fragment(view);
+                tokenSesion();
+                nav_fragment(getView());
             }
 
             @Override
@@ -69,8 +90,17 @@ public class InicioSesionFragment extends Fragment implements View.OnClickListen
         });
     }
 
+    private void tokenSesion() {
+        SharedPreferences preferences = activity.getSharedPreferences("TokenSesion", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("cedula", viewMain.FIniciSEdittextCedula.getText().toString());
+        editor.putString("contra", viewMain.FIniciSEdittextContraseA.getText().toString());
+        editor.putBoolean("token", true);
+        editor.commit();
+    }
+
     private void nav_fragment(View view) {
-        Navigation.findNavController(view).navigate(R.id.action_inicioSesionFragment_to_menuIncidenciaFragment);
+        Navigation.findNavController(view).navigate(R.id.action_inicioSesionFragment_to_menuOperadorFragment);
     }
 
 

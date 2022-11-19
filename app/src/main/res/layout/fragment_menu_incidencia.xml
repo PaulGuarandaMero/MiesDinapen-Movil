@@ -28,6 +28,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+
                 android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:gravity="center"
@@ -125,13 +126,12 @@
                             android:layout_weight="3"
                             android:gravity="center">
 
-                            <ImageButton
+                            <Button
                                 android:id="@+id/F_MenuI_Button_Map"
                                 android:layout_width="53dp"
                                 android:layout_height="wrap_content"
-                                android:text="Ubicacion "
                                 android:textColor="@color/black"
-                                android:src="@drawable/ic_map_24"/>
+                                android:drawableTop="@drawable/ic_map_24"/>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -206,29 +206,19 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/F_MenuI_Button_Cedula"
-                        android:layout_width="wrap_content"
-                        android:layout_height="39dp"
-                        android:layout_marginTop="5dp"
-                        android:drawableRight="@drawable/ic_search_24"
-                        android:text="cedula" />
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <Button
                         android:id="@+id/F_MenuI_Button_Grabar"
                         android:layout_width="wrap_content"
                         android:layout_height="39dp"
-                        android:layout_marginLeft="2dp"
-                        android:layout_marginTop="5dp"
                         android:drawableRight="@drawable/ic_mic_24"
                         android:text="Grabar" />
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
                         android:gravity="center">
 
                         <TextView
@@ -236,8 +226,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAlignment="center"
-                            android:text="Audios:\n 0" />
+                            android:text="Total de audios: 0" />
                     </LinearLayout>
+
                 </LinearLayout>
 
 
@@ -294,7 +285,7 @@
                             android:id="@+id/F_MenuI_TextView_CantidadFotos"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Fotos: 0" />
+                            android:text="Total de fotos: 0" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -314,21 +305,20 @@
                         android:textColor="@color/black"
                         android:textSize="15dp" />
 
-                    <ImageButton
+                    <Button
                         android:id="@+id/F_MenuI_Button_TomarFoto"
                         android:layout_width="100dp"
                         android:layout_height="50dp"
                         android:layout_marginTop="2dp"
                         android:layout_marginBottom="2dp"
-                        android:src="@drawable/ic_photo_plus_24"/>
+                        android:drawableTop="@drawable/ic_photo_plus_24"/>
 
-                    <ImageButton
+                    <Button
                         android:id="@+id/F_MenuI_Button_GuardarFoto"
                         android:layout_width="100dp"
                         android:layout_height="50dp"
                         android:layout_marginBottom="5dp"
-                        android:text="Boton: Guardar"
-                        android:src="@drawable/ic_save_24"/>
+                        android:drawableTop="@drawable/ic_save_24"/>
                 </LinearLayout>
 
             </LinearLayout>
@@ -343,6 +333,7 @@
             android:layout_margin="10dp"
             android:drawableRight="@drawable/ic_save_24"
             android:text="Guardar Incidencia" />
+
 
     </LinearLayout>
 

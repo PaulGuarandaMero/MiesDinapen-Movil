@@ -30,12 +30,12 @@ public class Localizacion implements LocationListener {
 
     @Override
     public void onProviderDisabled(String provider) {
-        Toast.makeText(context, "El provedor de Ubicacion esta deshabilita ", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "El provedor de Ubicacion esta deshabilitado ", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-        Toast.makeText(context, "El provedor de Ubicacion esta habilita ", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "El provedor de Ubicacion esta habilitado ", Toast.LENGTH_SHORT).show();
     }
 
     @Override

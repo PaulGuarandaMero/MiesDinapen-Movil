@@ -72,9 +72,6 @@ public class MenuIncidenciaFragment extends Fragment implements View.OnClickList
 
     Integer idOperador;
     String nombreOperador, ImagePath;
-    Boolean salir;
-    /** Este dato no sirve**/
-    String idI = "0";
 
 
     public MenuIncidenciaFragment() {
@@ -98,54 +95,21 @@ public class MenuIncidenciaFragment extends Fragment implements View.OnClickList
         initdata();
         setViewData();
         initEventClick();
-        backFragment();
+
 
         return viewMain.getRoot();
     }
 
-    private void backFragment(){
-        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                if(salir){
-                    AlertDialog.Builder builderAlerta = new AlertDialog.Builder(getContext());
-                    builderAlerta.setTitle("Salir");
-                    builderAlerta.setMessage("Desea cerrar sesión")
-                            .setPositiveButton("Salir", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    salir = false;
-                                    activity.onBackPressed();
-                                }
-                            })
-                            .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            })
-                            .setCancelable(false).show();
-                }else{
-                    //Este remove cancela el OnBackPressedCallback "IMPORTANTE"
-                    remove();
-                    salir = false;
-                    activity.onBackPressed();
-                }
 
-            }
-        };
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),callback);
-    }
 
 
     private void initdata(){
-        salir = true;
         nombreOperador = activity.getOperador().getOperaNombres()
                 + " " + activity.getOperador().getOperaApellido1()
                 + " " + activity.getOperador().getOperaApellido2();
         idOperador = activity.getOperador().getIDOperador();
-        viewMain.FMenuITextViewCantidadAudios.setText("Audios:\n " + activity.getLstA().size());
-        viewMain.FMenuITextViewCantidadFotos.setText("Fotos: " + activity.getLstF().size());
+        viewMain.FMenuITextViewCantidadAudios.setText("Total de audios: " + activity.getLstA().size());
+        viewMain.FMenuITextViewCantidadFotos.setText("Total de fotos: " + activity.getLstF().size());
     }
 
     private void setViewData(){
@@ -155,7 +119,6 @@ public class MenuIncidenciaFragment extends Fragment implements View.OnClickList
     }
 
     private void initEventClick(){
-        viewMain.FMenuIButtonCedula.setOnClickListener(this);
         viewMain.FMenuIButtonGrabar.setOnClickListener(this);
         viewMain.FMenuIButtonMap.setOnClickListener(this);
         viewMain.FMenuIButtonTomarFoto.setOnClickListener(this);
@@ -174,13 +137,8 @@ public class MenuIncidenciaFragment extends Fragment implements View.OnClickList
         if (view == viewMain.FMenuITextViewCantidadFotos) {
             Navigation.findNavController(view).navigate(R.id.action_menuIncidenciaFragment_to_galeriaFragment);
         }
-        if (view == viewMain.FMenuIButtonCedula) {
-            Navigation.findNavController(view).navigate(R.id.action_menuIncidenciaFragment_to_consultarCedulaFragment);
-        }
         if (view == viewMain.FMenuIButtonGrabar) {
-            Bundle bundle = new Bundle();
-            bundle.putString("idIncendicia", idI);
-            Navigation.findNavController(view).navigate(R.id.action_menuIncidenciaFragment_to_grabarAudioFragment,bundle);
+            Navigation.findNavController(view).navigate(R.id.action_menuIncidenciaFragment_to_grabarAudioFragment);
         }
         if (view == viewMain.FMenuIButtonMap) {
             String map = "http://maps.google.com/maps?q="+viewMain.FMenuITextViewLatitud.getText()+","+ viewMain.FMenuITextViewLongitud.getText();
@@ -199,7 +157,7 @@ public class MenuIncidenciaFragment extends Fragment implements View.OnClickList
                         public void onClick(DialogInterface dialogInterface, int i) {
                             Toast.makeText(getContext(), "Agregado", Toast.LENGTH_LONG).show();
                             activity.getLstF().add(ImagePath);
-                            viewMain.FMenuITextViewCantidadFotos.setText("Fotos: "+activity.getLstF().size());
+                            viewMain.FMenuITextViewCantidadFotos.setText("Total de fotos: "+activity.getLstF().size());
                         }
                     })
                     .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

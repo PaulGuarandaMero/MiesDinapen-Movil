@@ -1,5 +1,7 @@
 package com.example.mies_dinapen.Model;
 
+import java.util.Objects;
+
 public class Operador {
     private int IDOperador;
     private String IDInstitucion;
@@ -11,6 +13,7 @@ public class Operador {
 
     public Operador() {
     }
+
 
     public Operador(int IDOperador, String IDInstitucion, String operaCargo, String operaNCedula, String operaApellido1, String operaApellido2, String operaNombres) {
         this.IDOperador = IDOperador;
@@ -89,5 +92,18 @@ public class Operador {
                 ", OperaApellido2='" + OperaApellido2 + '\'' +
                 ", OperaNombres='" + OperaNombres + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Operador)) return false;
+        Operador operador = (Operador) o;
+        return getIDOperador() == operador.getIDOperador() && Objects.equals(getIDInstitucion(), operador.getIDInstitucion()) && Objects.equals(getOperaCargo(), operador.getOperaCargo()) && Objects.equals(getOperaNCedula(), operador.getOperaNCedula()) && Objects.equals(getOperaApellido1(), operador.getOperaApellido1()) && Objects.equals(getOperaApellido2(), operador.getOperaApellido2()) && Objects.equals(getOperaNombres(), operador.getOperaNombres());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getIDOperador(), getIDInstitucion(), getOperaCargo(), getOperaNCedula(), getOperaApellido1(), getOperaApellido2(), getOperaNombres());
     }
 }

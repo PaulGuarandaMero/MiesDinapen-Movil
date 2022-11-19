@@ -2,13 +2,13 @@ package com.example.mies_dinapen.Model;
 
 public class Item_historial {
     private String IDIntervencion;
-    private String FechaIntervencion;
+    private String FechaRegistro;
     private String Estado;
     private Operador operador;
 
-    public Item_historial(String IDIntervencion, String fechaIntervencion, String estado, Operador operador) {
+    public Item_historial(String IDIntervencion, String fechaRegistro, String estado, Operador operador) {
         this.IDIntervencion = IDIntervencion;
-        FechaIntervencion = fechaIntervencion;
+        FechaRegistro = fechaRegistro;
         Estado = estado;
         this.operador = operador;
     }
@@ -21,12 +21,12 @@ public class Item_historial {
         this.IDIntervencion = IDIntervencion;
     }
 
-    public String getFechaIntervencion() {
-        return FechaIntervencion;
+    public String getFechaRegistro() {
+        return FechaRegistro;
     }
 
-    public void setFechaIntervencion(String fechaIntervencion) {
-        FechaIntervencion = fechaIntervencion;
+    public void setFechaRegistro(String fechaRegistro) {
+        FechaRegistro = fechaRegistro;
     }
 
     public String getEstado() {
@@ -49,7 +49,7 @@ public class Item_historial {
     public String toString() {
         return "Item_historial{" +
                 "IDIntervencion='" + IDIntervencion + '\'' +
-                ", FechaIntervencion='" + FechaIntervencion + '\'' +
+                ", FechaRegistro='" + FechaRegistro + '\'' +
                 ", Estado='" + Estado + '\'' +
                 ", operador=" + operador +
                 '}';

@@ -3,19 +3,26 @@ package com.example.mies_dinapen.View.Activity;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.splashscreen.SplashScreen;
 import androidx.navigation.Navigation;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.mies_dinapen.Controller.Retrofit.Retrofit;
 import com.example.mies_dinapen.Model.Operador;
+import com.example.mies_dinapen.R;
 import com.example.mies_dinapen.databinding.ActivityContendorBinding;
 import com.example.mies_dinapen.service.Servicios;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 
 public class Activity_Contenedor extends AppCompatActivity {
 
@@ -27,10 +34,18 @@ public class Activity_Contenedor extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.Theme_MiesDinapen);
+
         super.onCreate(savedInstanceState);
         viewMain = ActivityContendorBinding.inflate(getLayoutInflater());
         setContentView(viewMain.getRoot());
+
         this.getPermises();
+        this.initdata();
+
+    }
+
+    private void initdata() {
         lstA = new ArrayList<>();
         lstF = new ArrayList<>();
         operador = new Operador();
@@ -75,5 +90,6 @@ public class Activity_Contenedor extends AppCompatActivity {
     public void setOperador(Operador operador) {
         this.operador = operador;
     }
+
 
 }

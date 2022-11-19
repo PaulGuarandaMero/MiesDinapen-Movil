@@ -12,11 +12,11 @@
         android:orientation="vertical"
         android:layout_margin="10dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageButton
+            android:layout_width="250dp"
+            android:layout_height="300dp"
             android:layout_margin="50px"
-            android:text="@string/InicioS_Textview_Title" />
+            android:background="@drawable/ic_z_logo_v"/>
 
         <EditText
             android:id="@+id/F_IniciS_Edittext_cedula"
@@ -41,7 +41,7 @@
 
         <Button
             android:id="@+id/F_IniciS_Button_Ingresar"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="50px"
             android:text="@string/InicioS_Button_Ingresar" />
