@@ -4,7 +4,8 @@ Proyecto Vinculacion
 # Approved
 
 Approved by Inspector #5 
-&& =KeyMa=
+
+=KeyMa=
 
 [![Banner6.jpg](https://i.postimg.cc/8z3gHwPC/Banner6.jpg)](https://postimg.cc/v4WK8rnR)
 
