@@ -52,7 +52,7 @@
                         android:layout_width="80dp"
                         android:layout_height="20dp"
                         android:text="Operador:"
-                        android:textAlignment="center"
+                        android:textAlignment="textStart"
                         android:textColor="@color/black" />
 
                     <TextView
@@ -60,7 +60,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:enabled="true"
-                        android:textAlignment="center"
+                        android:textAlignment="textStart"
                         android:textColor="@color/black"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -79,14 +79,14 @@
                             android:layout_width="80dp"
                             android:layout_height="20dp"
                             android:text="Latitud:"
-                            android:textAlignment="center"
+                            android:textAlignment="textStart"
                             android:textColor="@color/black" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="20dp"
                             android:text="Longitud:"
-                            android:textAlignment="center"
+                            android:textAlignment="textStart"
                             android:textColor="@color/black" />
                     </LinearLayout>
 
@@ -104,7 +104,7 @@
 
                             <TextView
                                 android:id="@+id/F_MenuI_TextView_Latitud"
-                                android:layout_width="79dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="20dp"
                                 android:enabled="true"
                                 android:text="Asignando.."
@@ -113,9 +113,10 @@
 
                             <TextView
                                 android:id="@+id/F_MenuI_TextView_Longitud"
-                                android:layout_width="79dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="20dp"
                                 android:text="Asignando.."
+                                android:textAlignment="textStart"
                                 android:textColor="@color/black"
                                 android:textStyle="bold" />
                         </LinearLayout>
@@ -145,8 +146,8 @@
                     <TextView
                         android:layout_width="80dp"
                         android:layout_height="20dp"
-                        android:text="fecha:"
-                        android:textAlignment="center"
+                        android:text="Fecha:"
+                        android:textAlignment="textStart"
                         android:textColor="@color/black" />
 
                     <TextView
@@ -154,7 +155,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="20dp"
                         android:text=""
-                        android:textAlignment="center"
+                        android:textAlignment="textStart"
                         android:textColor="@color/black" />
                 </LinearLayout>
                 <!--Referenciua-->
@@ -168,7 +169,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="20dp"
                         android:text="Referencia:"
-                        android:textAlignment="center"
+                        android:textAlignment="textStart"
                         android:textColor="@color/black" />
 
                     <EditText
@@ -191,7 +192,7 @@
                         android:layout_height="20dp"
                         android:layout_marginBottom="5dp"
                         android:text="Nombre del representante: "
-                        android:textAlignment="center"
+                        android:textAlignment="textStart"
                         android:textColor="@color/black" />
 
                     <EditText

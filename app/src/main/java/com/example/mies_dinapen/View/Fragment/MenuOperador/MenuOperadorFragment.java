@@ -64,7 +64,11 @@ public class MenuOperadorFragment extends Fragment implements View.OnClickListen
 
     private void setViewData() {
         salir = true;
-        viewMain.FMenuOTextViewInstitucion.setText(activity.getOperador().getIDInstitucion());
+        if(activity.getOperador().getIDInstitucion().equals("1")){
+            viewMain.FMenuOTextViewInstitucion.setText("Ministerio de Inclusion Económica y Social");
+        } else {
+            viewMain.FMenuOTextViewInstitucion.setText("Policia Nacional");
+        }
         viewMain.FMenuOTextViewCargo.setText(activity.getOperador().getOperaCargo());
         viewMain.FMenuOTextViewCedula.setText(activity.getOperador().getOperaNCedula());
         viewMain.FMenuOTextViewApellidos.setText(activity.getOperador().getOperaApellido1() + " " + activity.getOperador().getOperaApellido2() );
