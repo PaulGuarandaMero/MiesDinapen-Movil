@@ -428,8 +428,8 @@ public class MenuIncidenciaFragment extends Fragment implements View.OnClickList
     private void clearView(){
         activity.getLstF().clear();
         activity.getLstA().clear();
-        viewMain.FMenuITextViewCantidadFotos.setText(activity.getLstF().size()+"");
-        viewMain.FMenuITextViewCantidadAudios.setText(activity.getLstA().size()+"");
+        viewMain.FMenuITextViewCantidadFotos.setText("Total de fotos: " + activity.getLstF().size()+"");
+        viewMain.FMenuITextViewCantidadAudios.setText("Total de audios: " +activity.getLstA().size()+"");
         viewMain.FMenuIEditTextReferencia.setText("");
         viewMain.FMenuIEditTextRepresentante.setText("");
         viewMain.FMenuIImageVFoto.setImageBitmap(null);
