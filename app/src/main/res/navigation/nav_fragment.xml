@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_fragment"
+    app:startDestination="@id/inicioSesionFragment">
+
+    <fragment
+        android:id="@+id/inicioSesionFragment"
+        android:name="com.example.mies_dinapen.View.Fragment.InicioSesion.InicioSesionFragment"
+        android:label="fragment_inicio_sesion"
+        tools:layout="@layout/fragment_inicio_sesion" >
+        <action
+            android:id="@+id/action_inicioSesionFragment_to_menuOperadorFragment"
+            app:destination="@id/menuOperadorFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/slide_in"
+            app:popExitAnim="@anim/slide_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/menuIncidenciaFragment"
+        android:name="com.example.mies_dinapen.View.Fragment.MenuIncidencia.MenuIncidenciaFragment"
+        android:label="fragment_menu_incidencia"
+        tools:layout="@layout/fragment_menu_incidencia" >
+        <action
+            android:id="@+id/action_menuIncidenciaFragment_to_grabarAudioFragment"
+            app:destination="@id/grabarAudioFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/slide_in"
+            app:popExitAnim="@anim/slide_out" />
+        <action
+            android:id="@+id/action_menuIncidenciaFragment_to_reproducirAudioFragment"
+            app:destination="@id/reproducirAudioFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/slide_in"
+            app:popExitAnim="@anim/slide_out" />
+        <action
+            android:id="@+id/action_menuIncidenciaFragment_to_galeriaFragment"
+            app:destination="@id/galeriaFragment"
+            app:enterAnim="@anim/fade_out"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/slide_in"
+            app:popExitAnim="@anim/slide_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/consultarCedulaFragment"
+        android:name="com.example.mies_dinapen.View.Fragment.ConsultarCedula.ConsultarCedulaFragment"
+        android:label="fragment_consultar_cedula"
+        tools:layout="@layout/fragment_consultar_cedula" />
+    <fragment
+        android:id="@+id/grabarAudioFragment"
+        android:name="com.example.mies_dinapen.View.Fragment.GrabarAudio.GrabarAudioFragment"
+        android:label="fragment_grabar_audio"
+        tools:layout="@layout/fragment_grabar_audio" />
+    <fragment
+        android:id="@+id/reproducirAudioFragment"
+        android:name="com.example.mies_dinapen.View.Fragment.ReproducirAudio.ReproducirAudioFragment"
+        android:label="fragment_reproducir_audio"
+        tools:layout="@layout/fragment_reproducir_audio" />
+    <fragment
+        android:id="@+id/galeriaFragment"
+        android:name="com.example.mies_dinapen.View.Fragment.Galeria.GaleriaFragment"
+        android:label="fragment_galeria"
+        tools:layout="@layout/fragment_galeria" />
+    <fragment
+        android:id="@+id/menuOperadorFragment"
+        android:name="com.example.mies_dinapen.View.Fragment.MenuOperador.MenuOperadorFragment"
+        android:label="fragment_menu_operador"
+        tools:layout="@layout/fragment_menu_operador" >
+        <action
+            android:id="@+id/action_menuOperadorFragment_to_menuIncidenciaFragment"
+            app:destination="@id/menuIncidenciaFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/slide_in"
+            app:popExitAnim="@anim/slide_out" />
+        <action
+            android:id="@+id/action_menuOperadorFragment_to_consultarCedulaFragment"
+            app:destination="@id/consultarCedulaFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/slide_in"
+            app:popExitAnim="@anim/slide_out" />
+    </fragment>
+</navigation>
